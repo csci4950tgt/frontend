@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import './App.css';
-
+import axios from 'axios';
 import UserInput from './components/UserInput';
+import rest from './apis/rest';
 
 
 class App extends Component {
@@ -9,15 +10,26 @@ class App extends Component {
     userInput: []
   }
 
-  userInput = (url, height, width) =>{
+  userInput = (url, height, width, key) =>{
     const newUserInput = {
+      key: key,
       url: url,
       height: height,
       width: width
     }
-
-    this.setState({userInput: [...this.state.userInput, newUserInput]});
+    axios.post(rest.get('/api/honeyclient/create'), {
+        "url": url, 
+        "screenshot": {
+              "width": width,
+              "height": height,
+              "filename": "screenshot.png"
+        }
+      }).then(res => console.log("get it"));
   }
+  //onSearchSubmit 
+
+
+  //  this.setState({userInput: [...this.state.userInput, newUserInput]});
 
   render(){
     return (
