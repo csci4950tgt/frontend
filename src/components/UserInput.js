@@ -11,19 +11,21 @@ class UserInput extends Component {
     this.setState({[e.target.name]:e.target.value});
   }
 
-  onSubmit = (e) => {
+  onFormSubmit = (e) => {
     e.preventDefault();
     this.props.userInput(this.state.url, this.state.height, this.state.width);
     this.setState({url: '',
       height: '',
       width: ''});
+    this.props.onSubmit(this.state.url);
+
   }
   render(){
     return (
       <div>
         <h3> Enter Parameters:</h3>
         <form
-        onSubmit={this.onSubmit}
+        onSubmit={this.onFormSubmit}
         style={{display: 'inline-block'}}>
         <input
           style={inputStyle}
