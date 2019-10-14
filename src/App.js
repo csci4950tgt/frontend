@@ -7,7 +7,8 @@ import rest from './apis/rest';
 
 class App extends Component {
   state = {
-    userInput: []
+    userInput: [],
+    somethingout:[]
   }
 
   userInput = (url, height, width, key) =>{
@@ -24,9 +25,15 @@ class App extends Component {
               "height": height,
               "filename": "screenshot.png"
         }
-      }).then(res => console.log("get it"));
+      }).then(res => console.log("get it")); // set state to something 
   }
-  //onSearchSubmit 
+  
+  onSearchSubmit = async () => {
+    const response = await rest.get('/api/honeyclient/create', {
+    });
+    console.log("get data working");
+   // this.setState({ //something state  });
+  }; 
 
 
   //  this.setState({userInput: [...this.state.userInput, newUserInput]});
@@ -35,7 +42,7 @@ class App extends Component {
     return (
       <div className="App">
         <h1> Vigilante Web Heist</h1>
-        <UserInput userInput={this.userInput} />
+        <UserInput userInput={this.userInput} onSubmit={this.onSearchSubmit}/>
         <h3 style={pStyle}> User Input </h3>
         <p style={pStyle}> The current user input list is: </p>
         <p> {this.state.userInput.map(input => <li> url: {input.url} h: {input.height} w: {input.width}  </li> )} </p>
