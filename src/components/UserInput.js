@@ -1,23 +1,37 @@
 import React, {Component} from 'react';
 
+
 class UserInput extends Component {
   state = {
     url: '',
     height: '',
-    width: ''
+    width: '',
+    name: 'Example ticket'
   }
   //for multiple on forms on a field
   onChange = (e) => {
     this.setState({[e.target.name]:e.target.value});
   }
 
-  onFormSubmit = (e) => {
+  onFormSubmit = async (e) => {
     e.preventDefault();
-    this.props.userInput(this.state.url, this.state.height, this.state.width);
-    this.setState({url: '',
-      height: '',
-      width: ''});
-    this.props.onSubmit(this.state.url);
+    try{
+      const res = await fetch("/api/honeyclient/create", {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        body: JSON.stringify(this.state) // body data type must match "Content-Type" header'
+    })
+    const response = await res.json();
+    console.log(res);
+    console.log(JSON.stringify(response));
+    }
+    catch(error){
+      console.log(error);
+    }
+
+    // const response = await fetch('/api/honeyclient/3', {
+    //   method: 'GET', // *GET, POST, PUT, DELETE, etc.
+    //
+    // });
 
   }
   render(){
