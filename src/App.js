@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import './App.css';
-import axios from 'axios';
 import UserInput from './components/UserInput';
-import rest from './apis/rest';
 
 
 class App extends Component {
