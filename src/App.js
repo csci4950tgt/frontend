@@ -18,22 +18,26 @@ class App extends Component {
       height: height,
       width: width
     }
-    axios.post(rest.get('/api/honeyclient/create'), {
-        "url": url, 
+    axios.post('http://localhost:8080/api/honeyclient/create', {
+        "url": url,
         "screenshot": {
               "width": width,
               "height": height,
               "filename": "screenshot.png"
         }
-      }).then(res => console.log("get it")); // set state to something 
+      }).then(res => this.setState({userInput: [...this.state.userInput, res.data]})); // set state to something
+
+      console.log("sent post")
+      this.setState({userInput: [...this.state.userInput, newUserInput]});
   }
-  
+
   onSearchSubmit = async () => {
-    const response = await rest.get('/api/honeyclient/create', {
+    const response = await rest.get('/api/honeyclient/3', {
     });
-    console.log("get data working");
+    console.log("gets response from api");
+    console.log(response);
    // this.setState({ //something state  });
-  }; 
+  };
 
 
   //  this.setState({userInput: [...this.state.userInput, newUserInput]});
