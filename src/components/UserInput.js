@@ -3,14 +3,31 @@ import React, {Component} from 'react';
 
 class UserInput extends Component {
   state = {
+    name: 'Example ticket',
     url: '',
-    height: '',
-    width: '',
-    name: 'Example ticket'
+    screenshot: {
+      height: '',
+      width: '',
+      filename: 'screenshot.png'
+    }
+
+
   }
   //for multiple on forms on a field
   onChange = (e) => {
-    this.setState({[e.target.name]:e.target.value});
+    if(e.target.name == "width" || e.target.name == "height"){
+      var screenshotProp = this.state.screenshot;
+      if(e.target.name == "width"){
+        screenshotProp.width = e.target.value;
+      }
+      else{
+        screenshotProp.height = e.target.value;
+      }
+      this.setState({screenshotProp});
+    }
+    else{
+      this.setState({[e.target.name]:e.target.value});
+    }
   }
 
   onFormSubmit = async (e) => {
@@ -53,14 +70,14 @@ class UserInput extends Component {
           type="text"
           name="width"
           placeholder="Enter an image width"
-          value={this.state.width}
+          value={this.state.screenshot.width}
           onChange={this.onChange} />
         <input
           style={inputStyle}
           type="text"
           name="height"
           placeholder=" Enter an image height"
-          value={this.state.height}
+          value={this.state.screenshot.height}
           onChange={this.onChange} />
         <input
           type="submit"
