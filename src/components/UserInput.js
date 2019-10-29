@@ -40,15 +40,11 @@ class UserInput extends Component {
     const response = await res.json();
     console.log(res);
     console.log(JSON.stringify(response));
+    this.props.response(JSON.stringify(response));
     }
     catch(error){
       console.log(error);
     }
-
-    // const response = await fetch('/api/honeyclient/3', {
-    //   method: 'GET', // *GET, POST, PUT, DELETE, etc.
-    //
-    // });
 
   }
   render(){
