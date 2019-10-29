@@ -8,12 +8,15 @@ import DisplayResponse from './components/DisplayResponse';
 class App extends Component {
 
   state = {
-    responseData: null
+    responseData: null,
+    ticket: {}
   }
 
   myCallback = (dataFromResponse) =>{
     this.setState({responseData : dataFromResponse})
   }
+
+
 
 
   render(){
