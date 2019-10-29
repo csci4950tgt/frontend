@@ -14,7 +14,6 @@ class App extends Component {
 
   myCallback = (dataFromResponse) =>{
     this.setState({responseData : dataFromResponse})
-    //a test
   }
 
 
