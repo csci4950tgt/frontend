@@ -28,7 +28,7 @@ class UserInput extends Component {
   onFormSubmit = async e => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/honeyclient/create', {
+      const res = await fetch('/api/tickets', {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         body: JSON.stringify(this.state), // body data type must match "Content-Type" header'
       });
