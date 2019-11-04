@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import ReactDom from 'react-dom';
+import { Container } from 'semantic-ui-react';
+
+// Components
 import UserInput from './components/UserInput';
 import DisplayResponse from './components/DisplayResponse';
 
@@ -15,7 +18,7 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <Container textAlign="center" style={{ marginTop: '3rem' }}>
         <h1> Vigilante Web Heist</h1>
 
         <UserInput response={this.myCallback} />
@@ -23,7 +26,7 @@ class App extends Component {
         {this.state && this.state.responseData && (
           <DisplayResponse response={this.state.responseData} />
         )}
-      </div>
+      </Container>
     );
   }
 }
