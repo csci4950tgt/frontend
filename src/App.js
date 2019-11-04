@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ReactDom from 'react-dom';
-import './App.css';
 import UserInput from './components/UserInput';
 import DisplayResponse from './components/DisplayResponse';
 
@@ -10,9 +9,9 @@ class App extends Component {
     ticket: {},
   };
 
-  myCallback = (dataFromResponse) =>{
-    this.setState({responseData : dataFromResponse})
-  }
+  myCallback = dataFromResponse => {
+    this.setState({ responseData: dataFromResponse });
+  };
 
   render() {
     return (
