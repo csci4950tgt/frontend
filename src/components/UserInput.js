@@ -45,14 +45,18 @@ class UserInput extends Component {
       <div>
         <h3> Enter Parameters:</h3>
         <form onSubmit={this.onFormSubmit} style={{ display: 'inline-block' }}>
+          <div class="ui labeled input">
+            <div class="ui label">
+              https://
+            </div>
           <input
-            style={inputStyle}
             type="text"
             name="url"
-            placeholder="Enter an url"
+            placeholder="example.com"
             value={this.state.url}
             onChange={this.onChange}
           />
+         </div>
           <input
             style={inputStyle}
             type="text"
@@ -72,7 +76,7 @@ class UserInput extends Component {
           <input
             type="submit"
             value="Submit"
-            className="btn"
+            className="ui secondary button"
             style={{ flex: '1' }}
           />
         </form>
