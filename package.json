@@ -6,7 +6,8 @@
     "perms": "^0.1.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
-    "react-scripts": "3.1.2"
+    "react-scripts": "3.1.2",
+    "semantic-ui-react": "^0.88.1"
   },
   "scripts": {
     "prettier": "prettier --write \"src/**/*.js\"",
