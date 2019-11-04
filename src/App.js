@@ -24,6 +24,7 @@ class App extends Component {
         {this.state && this.state.responseData && (
           <DisplayResponse response={this.state.responseData} />
         )}
+
       </div>
     );
   }
