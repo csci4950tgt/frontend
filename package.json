@@ -9,6 +9,7 @@
     "react-scripts": "3.1.2"
   },
   "scripts": {
+    "prettier": "prettier --write \"src/**/*.js\"",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
