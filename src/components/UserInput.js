@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-
+import { Input } from 'semantic-ui-react';
+import { Button } from 'semantic-ui-react';
 class UserInput extends Component {
   state = {
     name: 'Example ticket',
@@ -45,19 +46,15 @@ class UserInput extends Component {
       <div>
         <h3> Enter Parameters:</h3>
         <form onSubmit={this.onFormSubmit} style={{ display: 'inline-block' }}>
-          <div class="ui labeled input">
-            <div class="ui label">
-              https://
-            </div>
-          <input
-            type="text"
+          <Input
+            type="url"
             name="url"
-            placeholder="example.com"
+            placeholder="http://mysite.com"
             value={this.state.url}
             onChange={this.onChange}
           />
-         </div>
-          <input
+
+          {/*<input
             style={inputStyle}
             type="text"
             name="width"
@@ -72,13 +69,8 @@ class UserInput extends Component {
             placeholder=" Enter an image height"
             value={this.state.screenshot.height}
             onChange={this.onChange}
-          />
-          <input
-            type="submit"
-            value="Submit"
-            className="ui secondary button"
-            style={{ flex: '1' }}
-          />
+          /> */}
+          <Button content="Submit" />
         </form>
       </div>
     );
