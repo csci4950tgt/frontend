@@ -12,16 +12,16 @@ class App extends Component {
     ticket: {},
   };
 
-  myCallback = dataFromResponse => {
+  setResponseData = dataFromResponse => {
     this.setState({ responseData: dataFromResponse });
   };
 
   render() {
     return (
       <Container textAlign="center" style={{ marginTop: '3rem' }}>
-        <Header as="h1"> Vigilante Web Heist</Header>
+        <Header as="h1">Vigilante Web Heist</Header>
 
-        <UserInput response={this.myCallback} />
+        <UserInput response={this.setResponseData} />
 
         {this.state && this.state.responseData && (
           <DisplayResponse response={this.state.responseData} />
