@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDom from 'react-dom';
-import { Container } from 'semantic-ui-react';
+import { Container, Header } from 'semantic-ui-react';
 
 // Components
 import UserInput from './components/UserInput';
@@ -19,7 +19,7 @@ class App extends Component {
   render() {
     return (
       <Container textAlign="center" style={{ marginTop: '3rem' }}>
-        <h1> Vigilante Web Heist</h1>
+        <Header as="h1"> Vigilante Web Heist</Header>
 
         <UserInput response={this.myCallback} />
 
