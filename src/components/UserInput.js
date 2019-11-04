@@ -29,8 +29,6 @@ class UserInput extends Component {
       this.setState({screenshotProp});
     }
     else{
-      var la =e.target.name;
-      console.log(la);
       var name = e.target.name;
       var value = e.target.value;
       this.setState({[name]:value},  () => { this.validateField(name, value) });
@@ -43,7 +41,7 @@ class UserInput extends Component {
     let urlValid = this.state.urlValid;
 
     urlValid = value.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
-    fieldValidationErrors.url = 'Please enter a valid url';
+    fieldValidationErrors.url =  value + ' is invalid. \n Please enter a valid url.';
 
 
     this.setState({formErrors: fieldValidationErrors,
