@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import ReactDom from 'react-dom';
-import './App.css';
+import { Container, Header } from 'semantic-ui-react';
+
+// Components
 import UserInput from './components/UserInput';
 import DisplayResponse from './components/DisplayResponse';
 
@@ -10,22 +12,21 @@ class App extends Component {
     ticket: {},
   };
 
-  myCallback = dataFromResponse => {
+  setResponseData = dataFromResponse => {
     this.setState({ responseData: dataFromResponse });
-    //a test
   };
 
   render() {
     return (
-      <div className="App">
-        <h1> Vigilante Web Heist</h1>
+      <Container textAlign="center" style={{ marginTop: '3rem' }}>
+        <Header as="h1">Vigilante Web Heist</Header>
 
-        <UserInput response={this.myCallback} />
+        <UserInput response={this.setResponseData} />
 
         {this.state && this.state.responseData && (
           <DisplayResponse response={this.state.responseData} />
         )}
-      </div>
+      </Container>
     );
   }
 }
