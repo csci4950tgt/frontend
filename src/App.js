@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import ReactDom from 'react-dom';
 import { Container, Header } from 'semantic-ui-react';
 
 // Components
 import UserInput from './components/UserInput';
 import DisplayResponse from './components/DisplayResponse';
+import RecentTickets from './components/RecentTickets';
 
 class App extends Component {
   state = {
@@ -22,6 +22,8 @@ class App extends Component {
         <Header as="h1">Vigilante Web Heist</Header>
 
         <UserInput response={this.setResponseData} />
+
+        <RecentTickets />
 
         {this.state && this.state.responseData && (
           <DisplayResponse response={this.state.responseData} />
