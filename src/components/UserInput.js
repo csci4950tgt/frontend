@@ -48,6 +48,7 @@ class UserInput extends Component {
           <Input
             type="url"
             name="url"
+            required
             placeholder="http://mysite.com"
             value={this.state.url}
             onChange={this.onChange}
