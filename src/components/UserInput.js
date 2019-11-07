@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
 import { Input, Button, Form, Header } from 'semantic-ui-react';
-class UserInput extends Component {
+
+const inputStyle = {
+  display: 'block',
+  flex: '10',
+  padding: '5px',
+  margin: '10px',
+};
+
+export default class UserInput extends Component {
   state = {
     name: 'Example ticket',
     url: '',
@@ -12,9 +20,9 @@ class UserInput extends Component {
   };
   //for multiple on forms on a field
   onChange = e => {
-    if (e.target.name == 'width' || e.target.name == 'height') {
+    if (e.target.name === 'width' || e.target.name === 'height') {
       var screenshotProp = this.state.screenshot;
-      if (e.target.name == 'width') {
+      if (e.target.name === 'width') {
         screenshotProp.width = e.target.value;
       } else {
         screenshotProp.height = e.target.value;
@@ -46,6 +54,7 @@ class UserInput extends Component {
         <Header as="h3"> Enter Parameters:</Header>
         <Form onSubmit={this.onFormSubmit} style={{ display: 'inline-block' }}>
           <Input
+            style={inputStyle}
             type="url"
             name="url"
             required
@@ -76,12 +85,3 @@ class UserInput extends Component {
     );
   }
 }
-
-const inputStyle = {
-  display: 'block',
-  flex: '10',
-  padding: '5px',
-  margin: '10px',
-};
-
-export default UserInput;
