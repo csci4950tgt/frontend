@@ -3,7 +3,7 @@ import { Container, Header } from 'semantic-ui-react';
 
 // Components
 import UserInput from './components/UserInput';
-import DisplayResponse from './components/DisplayResponse';
+import Ticket from './components/Ticket';
 import RecentTickets from './components/RecentTickets';
 
 class App extends Component {
@@ -26,7 +26,7 @@ class App extends Component {
         <RecentTickets />
 
         {this.state && this.state.responseData && (
-          <DisplayResponse response={this.state.responseData} />
+          <Ticket response={this.state.responseData} />
         )}
       </Container>
     );

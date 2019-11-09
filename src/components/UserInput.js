@@ -41,8 +41,8 @@ export default class UserInput extends Component {
         body: JSON.stringify(this.state), // body data type must match "Content-Type" header'
       });
       const response = await res.json();
-      console.log(res);
-      console.log(JSON.stringify(response));
+      // console.log(res);
+      // console.log(JSON.stringify(response));
       this.props.response(JSON.stringify(response));
     } catch (error) {
       console.log(error);
