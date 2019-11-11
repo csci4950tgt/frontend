@@ -43,7 +43,7 @@ export default class UserInput extends Component {
       const response = await res.json();
       console.log(res);
       console.log(JSON.stringify(response));
-      this.props.response(JSON.stringify(response));
+      this.props.response(response.ticket);
     } catch (error) {
       console.log(error);
     }

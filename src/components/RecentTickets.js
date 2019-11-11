@@ -45,7 +45,7 @@ export default class RecentTickets extends Component {
                     </td>
                     <td>{ticket.processed ? 'Yes' : 'No'}</td>
                     <td>
-                      <a href={`/ticket/${ticket.ID}`}>Ticket #{ticket.ID}</a>
+                      <a href={`/tickets/${ticket.ID}`}>Ticket #{ticket.ID}</a>
                     </td>
                   </tr>
                 ))}
