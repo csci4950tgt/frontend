@@ -1,16 +1,11 @@
 import React, { Component } from 'react';
-import { Container, Header } from 'semantic-ui-react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 // Routes
 import Routes from './routes/Routes';
 
-const Layout = ({ children }) => (
-  <Container textAlign="center" style={{ marginTop: '3rem' }}>
-    <Header as="h1">Vigilante Web Heist</Header>
-    {children}
-  </Container>
-);
+// Components
+import Layout from './components/Layout';
 
 class App extends Component {
   state = {

@@ -5,13 +5,11 @@ import { useRouteMatch } from 'react-router-dom';
 // Routes
 import NestedTicketRoutes from '../../routes/NestedTicketRoutes';
 
-const Tickets = () => {
+const Tickets = ({ ticket }) => {
   const { path, url } = useRouteMatch();
   return (
     <>
-      <Header as="h3">Tickets</Header>
-
-      <NestedTicketRoutes path={path} />
+      <NestedTicketRoutes path={path} ticket={ticket} />
     </>
   );
 };
