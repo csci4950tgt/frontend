@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Input, Button, Form, Header } from 'semantic-ui-react';
+import { Redirect } from 'react-router-dom';
+import { createTicket } from '../../utils/api';
 
 const inputStyle = {
   display: 'block',
@@ -17,6 +19,7 @@ export default class UserInput extends Component {
       width: '',
       filename: 'screenshot.png',
     },
+    newTicket: null,
   };
   //for multiple on forms on a field
   onChange = e => {
@@ -35,35 +38,40 @@ export default class UserInput extends Component {
 
   onFormSubmit = async e => {
     e.preventDefault();
-    try {
-      const res = await fetch('/api/tickets', {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        body: JSON.stringify(this.state), // body data type must match "Content-Type" header'
-      });
-      const response = await res.json();
+    const body = JSON.stringify(this.state);
+    const res = await createTicket(body);
+    if (!res) {
+      console.error('Error creating ticket!!');
+      // TODO: let user know about error
+    } else {
       console.log(res);
-      console.log(JSON.stringify(response));
-      this.props.response(response.ticket);
-    } catch (error) {
-      console.log(error);
+      this.setState({ newTicket: res.ticket });
     }
   };
   render() {
+    const { newTicket } = this.state;
     return (
       <div>
-        <Header as="h3"> Enter Parameters:</Header>
-        <Form onSubmit={this.onFormSubmit} style={{ display: 'inline-block' }}>
-          <Input
-            style={inputStyle}
-            type="url"
-            name="url"
-            required
-            placeholder="http://mysite.com"
-            value={this.state.url}
-            onChange={this.onChange}
-          />
+        {newTicket ? (
+          <Redirect to={`/tickets/${newTicket.ID}`} />
+        ) : (
+          <>
+            <Header as="h3"> Enter Parameters:</Header>
+            <Form
+              onSubmit={this.onFormSubmit}
+              style={{ display: 'inline-block' }}
+            >
+              <Input
+                style={inputStyle}
+                type="url"
+                name="url"
+                required
+                placeholder="http://mysite.com"
+                value={this.state.url}
+                onChange={this.onChange}
+              />
 
-          {/*<input
+              {/*<input
             style={inputStyle}
             type="text"
             name="width"
@@ -79,8 +87,10 @@ export default class UserInput extends Component {
             value={this.state.screenshot.height}
             onChange={this.onChange}
           /> */}
-          <Button content="Submit" />
-        </Form>
+              <Button content="Submit" />
+            </Form>
+          </>
+        )}
       </div>
     );
   }

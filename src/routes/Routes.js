@@ -5,13 +5,10 @@ import { Switch, Route } from 'react-router-dom';
 import Home from '../views/Home/Home';
 import Tickets from '../views/Tickets/Tickets';
 
-const Routes = ({ appState, setCurTicket }) => (
+const Routes = () => (
   <Switch>
-    <Route exact path="/" render={() => <Home setCurTicket={setCurTicket} />} />
-    <Route
-      path="/tickets"
-      render={() => <Tickets ticket={appState.curTicket} />}
-    />
+    <Route exact path="/" render={() => <Home />} />
+    <Route path="/tickets" render={() => <Tickets />} />
   </Switch>
 );
 
