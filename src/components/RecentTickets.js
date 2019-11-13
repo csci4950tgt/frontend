@@ -39,7 +39,7 @@ export default class RecentTickets extends Component {
               </thead>
               <tbody>
                 {this.state.lastResponse.map(ticket => (
-                  <tr>
+                  <tr key={ticket.ID}>
                     <td>{ticket.url}</td>
                     <td>
                       <Moment date={ticket.CreatedAt} fromNow />
@@ -84,14 +84,14 @@ export default class RecentTickets extends Component {
 
   async refresh() {
     try {
-      console.log('Requesting listing of recent tickets from server...');
+      // console.log('Requesting listing of recent tickets from server...');
 
       const ticketsResponse = await fetch('/api/tickets').then(res =>
         res.json()
       );
 
-      console.log('Received ticket listing response from server:');
-      console.log(ticketsResponse);
+      // console.log('Received ticket listing response from server:');
+      // console.log(ticketsResponse);
 
       if (ticketsResponse.success) {
         this.setState({
