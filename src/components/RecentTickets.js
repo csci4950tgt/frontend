@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Moment from 'react-moment';
+import { Link } from 'react-router-dom';
 
 const recentTickets = {
   display: 'inline-block',
@@ -45,7 +46,9 @@ export default class RecentTickets extends Component {
                     </td>
                     <td>{ticket.processed ? 'Yes' : 'No'}</td>
                     <td>
-                      <a href={`/ticket/${ticket.ID}`}>Ticket #{ticket.ID}</a>
+                      <Link to={`/tickets/${ticket.ID}`}>
+                        Ticket #{ticket.ID}
+                      </Link>
                     </td>
                   </tr>
                 ))}

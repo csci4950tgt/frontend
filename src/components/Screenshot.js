@@ -10,15 +10,14 @@ export default class Screenshot extends Component {
     const response = JSON.parse(this.props.response);
     this.state.id = response.ticket.ID;
     const id = response.ticket.ID;
-    debugger;
-    const endpoint = '/api/tickets/' + this.state.id + '/artifacts/screenshots';
+    const endpoint = '/api/tickets/' + this.state.id + '/artifacts';
     try {
       const res = await fetch(endpoint, {
         method: 'GET',
       });
       const response = await res.json();
       console.log(res);
-      // console.log(JSON.stringify(response));
+      console.log(JSON.stringify(response));
       // this.props.response(JSON.stringify(response));
     } catch (error) {
       console.log(error);

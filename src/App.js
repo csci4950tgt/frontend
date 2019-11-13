@@ -1,34 +1,29 @@
 import React, { Component } from 'react';
-import { Container, Header } from 'semantic-ui-react';
+import { BrowserRouter as Router } from 'react-router-dom';
+
+// Routes
+import Routes from './routes/Routes';
 
 // Components
-import UserInput from './components/UserInput';
-import Ticket from './components/Ticket';
-import RecentTickets from './components/RecentTickets';
+
+import Layout from './components/Layout';
 
 class App extends Component {
   state = {
-    responseData: null,
-    ticket: {},
+    curTicket: {},
   };
 
-  setResponseData = dataFromResponse => {
-    this.setState({ responseData: dataFromResponse });
+  setCurTicket = ticket => {
+    this.setState({ curTicket: ticket });
   };
 
   render() {
     return (
-      <Container textAlign="center" style={{ marginTop: '3rem' }}>
-        <Header as="h1">Vigilante Web Heist</Header>
-
-        <UserInput response={this.setResponseData} />
-
-        <RecentTickets />
-
-        {this.state && this.state.responseData && (
-          <Ticket response={this.state.responseData} />
-        )}
-      </Container>
+      <Router>
+        <Layout>
+          <Routes appState={this.state} setCurTicket={this.setCurTicket} />
+        </Layout>
+      </Router>
     );
   }
 }
