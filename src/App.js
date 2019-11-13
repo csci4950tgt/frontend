@@ -9,19 +9,11 @@ import Routes from './routes/Routes';
 import Layout from './components/Layout';
 
 class App extends Component {
-  state = {
-    curTicket: {},
-  };
-
-  setCurTicket = ticket => {
-    this.setState({ curTicket: ticket });
-  };
-
   render() {
     return (
       <Router>
         <Layout>
-          <Routes appState={this.state} setCurTicket={this.setCurTicket} />
+          <Routes />
         </Layout>
       </Router>
     );
