@@ -2,8 +2,8 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 // Views
-import Home from '../views/Home/Home';
-import Tickets from '../views/Tickets/Tickets';
+import Home from '../views/home/Home';
+import Tickets from '../views/tickets/Tickets';
 
 const Routes = () => (
   <Switch>

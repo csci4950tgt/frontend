@@ -1,19 +1,13 @@
 import React from 'react';
-import { Container, Header } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
-
-const Nav = () => (
-  <div style={{ marginBottom: '2rem' }}>
-    <Header as={Link} to="/" color="blue" style={{ fontSize: '2rem' }}>
-      Vigilante Web Heist
-    </Header>
-  </div>
-);
+import { Container } from 'semantic-ui-react';
+import Header from './Header';
+import Footer from './Footer';
 
 const Layout = ({ children }) => (
   <Container textAlign="center" style={{ marginTop: '3rem' }}>
-    <Nav />
+    <Header />
     {children}
+    <Footer />
   </Container>
 );
 
