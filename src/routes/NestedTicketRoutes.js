@@ -6,7 +6,7 @@ import { Switch, Route } from 'react-router-dom';
 import RecentTickets from '../components/RecentTickets';
 
 // View sub-components
-import Ticket from '../views/Tickets/Ticket';
+import Ticket from '../views/tickets/Ticket';
 
 const NestedTicketRoutes = ({ path }) => (
   <Switch>
