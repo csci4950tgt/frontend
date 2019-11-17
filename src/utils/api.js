@@ -1,6 +1,6 @@
 export const fetchTicket = async ticketID => {
   try {
-    const res = await fetch(`/api/tickets/${ticketID}`);
+    const res = await fetch(`http://localhost:8080/api/tickets/${ticketID}`);
     // handle bad error codes
     if (res.status !== 200) {
       console.error(res);
@@ -18,7 +18,7 @@ export const fetchTicket = async ticketID => {
 export const createTicket = async body => {
   try {
     // fetch from backend
-    const res = await fetch('/api/tickets', {
+    const res = await fetch('http://localhost:8080/api/tickets', {
       method: 'POST',
       body,
     });

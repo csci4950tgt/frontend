@@ -86,9 +86,9 @@ export default class RecentTickets extends Component {
     try {
       // console.log('Requesting listing of recent tickets from server...');
 
-      const ticketsResponse = await fetch('/api/tickets').then(res =>
-        res.json()
-      );
+      const ticketsResponse = await fetch(
+        'http://localhost:8080/api/tickets'
+      ).then(res => res.json());
 
       // console.log('Received ticket listing response from server:');
       // console.log(ticketsResponse);
