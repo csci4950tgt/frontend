@@ -44,7 +44,7 @@ export default class UserInput extends Component {
     e.preventDefault();
     const body = JSON.stringify(this.state);
     const res = await createTicket(body);
-    if (!res ) {
+    if (!res || this.state.url === '') {
       console.error('Error creating ticket!!');
       // TODO: let user know about error
     } else {
@@ -53,7 +53,7 @@ export default class UserInput extends Component {
     }
   };
 
-  handlebut = () => {
+  HandleBut = () => {
     if (this.state.url === '') {
       this.setState({inputValid: false});
     } else {
@@ -62,7 +62,6 @@ export default class UserInput extends Component {
   }
 
   render() {
-    console.log(this.state.inputValid);
     const { newTicket } = this.state;
     return (
       <div>
@@ -105,7 +104,7 @@ export default class UserInput extends Component {
             value={this.state.screenshot.height}
             onChange={this.onChange}
           /> */}
-              <Button content="Submit" onClick = {this.handlebut}/>
+              <Button content="Submit" onClick = {this.HandleBut}/>
               </form>
             </Form>
           </>
