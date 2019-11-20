@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Input, Button, Form, Header } from 'semantic-ui-react';
 import { Redirect } from 'react-router-dom';
 import { createTicket } from '../../utils/api';
+import Validation from './Validation';
 
 const inputStyle = {
   display: 'block',
@@ -10,10 +11,12 @@ const inputStyle = {
   margin: '10px',
 };
 
+
 export default class UserInput extends Component {
   state = {
     name: 'Example ticket',
     url: '',
+    inputValid: true,
     screenshot: {
       height: '',
       width: '',
@@ -23,6 +26,7 @@ export default class UserInput extends Component {
   };
   //for multiple on forms on a field
   onChange = e => {
+    this.setState({inputValid: true});
     if (e.target.name === 'width' || e.target.name === 'height') {
       var screenshotProp = this.state.screenshot;
       if (e.target.name === 'width') {
@@ -40,7 +44,7 @@ export default class UserInput extends Component {
     e.preventDefault();
     const body = JSON.stringify(this.state);
     const res = await createTicket(body);
-    if (!res) {
+    if (!res ) {
       console.error('Error creating ticket!!');
       // TODO: let user know about error
     } else {
@@ -48,7 +52,17 @@ export default class UserInput extends Component {
       this.setState({ newTicket: res.ticket });
     }
   };
+
+  handlebut = () => {
+    if (this.state.url === '') {
+      this.setState({inputValid: false});
+    } else {
+      this.setState({inputValid: true});
+    }
+  }
+
   render() {
+    console.log(this.state.inputValid);
     const { newTicket } = this.state;
     return (
       <div>
@@ -61,16 +75,20 @@ export default class UserInput extends Component {
               onSubmit={this.onFormSubmit}
               style={{ display: 'inline-block' }}
             >
+            <form class="ui warning form">
+              <div class="field">
+              <div class="ui input">
               <Input
                 style={inputStyle}
                 type="url"
                 name="url"
-                required
                 placeholder="http://mysite.com"
                 value={this.state.url}
                 onChange={this.onChange}
               />
-
+              </div>
+              </div>
+              <Validation data={this.state.url} required="true" inputValid = {this.state.inputValid}/>
               {/*<input
             style={inputStyle}
             type="text"
@@ -87,7 +105,8 @@ export default class UserInput extends Component {
             value={this.state.screenshot.height}
             onChange={this.onChange}
           /> */}
-              <Button content="Submit" />
+              <Button content="Submit" onClick = {this.handlebut}/>
+              </form>
             </Form>
           </>
         )}
