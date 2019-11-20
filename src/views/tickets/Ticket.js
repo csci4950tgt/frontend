@@ -16,7 +16,6 @@ class Ticket extends React.Component {
   }
 
   async checkProcessed() {
-    console.log('checking');
     try {
       const res = await fetch(
         'http://localhost:8080/api/tickets/' + this.state.ticketID,
