@@ -57,7 +57,7 @@ class Ticket extends React.Component {
           <div>
             <Header as="h3" inverted color="blue">
               {' '}
-              Screenshot for ticket #{this.state.id}{' '}
+              Screenshot for ticket #{this.state.ticketID}{' '}
             </Header>
             <Screenshot ticketID={this.state.ticketID} />
             <JSViewer
