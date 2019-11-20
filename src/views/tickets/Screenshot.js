@@ -27,22 +27,15 @@ export default class Screenshot extends Component {
 
     if (processed) {
       this.setState({ processed: true });
-      const endpoint =
-        'http://localhost:8080/api/tickets/' + this.state.id + '/artifacts';
-      try {
-        const res = await fetch(endpoint, {
-          method: 'GET',
-        });
-      } catch (error) {
-        console.log(error);
-      }
     } else {
       this.setState({ processed: false });
     }
   };
 
   render() {
-    this.onResponseReceived();
+    if (!this.state.processed) {
+      this.onResponseReceived();
+    }
 
     return (
       <div>
