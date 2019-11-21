@@ -1,75 +1,67 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Header } from 'semantic-ui-react';
 import { withRouter } from 'react-router';
 
 import Screenshot from './Screenshot';
 import JSViewer from './JSViewer';
 
-class Ticket extends React.Component {
+
+const REFRESH_EVERY_MS = 1000;
+
+export default class Ticket extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      currentCode: '',
-      processed: false,
-      ticketID: this.props.match.params.ticketID,
+      ticketInfo: {
+        ticketID: props.match.params.ticketID,
+        processed: false,
+      },
+      refreshInterval: setInterval(this.refreshTicketState, REFRESH_EVERY_MS),
     };
+
+    this.refreshTicketState();
   }
 
-  async checkProcessed() {
-    try {
-      const res = await fetch(
-        'http://localhost:8080/api/tickets/' + this.state.ticketID,
-        {
-          method: 'GET',
-        }
-      );
+  stopAutomaticRefreshing() {
+    clearInterval(this.state.refreshInterval);
+  }
 
-      const response = await res.json();
-      const processed = response.ticket.processed;
-      this.setState({ processed: processed });
-      if (processed) {
-        clearInterval(this.interval);
-      }
+  componentWillUnmount() {
+    // clean up in case we're navigating away:
+    this.stopAutomaticRefreshing();
+  }
+
+  refreshTicketState = async e => {
+    const ticketURL = `http://localhost:8080/api/tickets/${this.state.ticketInfo.ticketID}`;
+
+    try {
+      fetch(ticketURL, { method: 'GET' })
+        .then(res => res.json())
+        .then(res => {
+          const { processed } = res.ticket;
+
+          this.setState(prevState => {
+            const { ticketInfo } = prevState;
+            ticketInfo.processed = processed;
+            return ticketInfo;
+          });
+
+          if (processed) {
+            this.stopAutomaticRefreshing();
+          }
+        });
     } catch (error) {
       console.log(error);
     }
-  }
-
-  componentDidMount() {
-    this.interval = setInterval(this.checkProcessed.bind(this), 5000);
-    this.checkProcessed();
-  }
-
-  onFileSelectionChange = (e, data) => {
-    this.setState({ currentCode: data.value });
   };
 
   render() {
+    const { ticketInfo } = this.state;
     return (
-      <div>
-        {!this.state.processed && (
-          <Header as="h3" inverted color="blue">
-            {' '}
-            This ticket has not been processed. Please wait.{' '}
-          </Header>
-        )}
-        {this.state.processed && (
-          <div>
-            <Header as="h3" inverted color="blue">
-              {' '}
-              Screenshot for ticket #{this.state.ticketID}{' '}
-            </Header>
-            <Screenshot ticketID={this.state.ticketID} />
-            <JSViewer
-              ticketID={this.state.ticketID}
-              onFileSelectionChange={this.onFileSelectionChange}
-              code={this.state.currentCode}
-            />
-          </div>
-        )}
-      </div>
+      <>
+        <Screenshot ticketInfo={ticketInfo} />
+      </>
     );
   }
 }
-
-export default withRouter(Ticket);
