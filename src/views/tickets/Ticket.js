@@ -8,9 +8,10 @@ export default class Ticket extends Component {
     super(props);
 
     this.state = {
-      processed: false,
-      ticketID: props.match.params.ticketID,
-      url: props.match.url,
+      ticketInfo: {
+        ticketID: props.match.params.ticketID,
+        processed: false,
+      },
       refreshInterval: setInterval(this.refreshTicketState, REFRESH_EVERY_MS),
     };
 
@@ -27,15 +28,19 @@ export default class Ticket extends Component {
   }
 
   refreshTicketState = async e => {
-    const ticketURL = `http://localhost:8080/api/tickets/${this.state.ticketID}`;
+    const ticketURL = `http://localhost:8080/api/tickets/${this.state.ticketInfo.ticketID}`;
 
     try {
       fetch(ticketURL, { method: 'GET' })
         .then(res => res.json())
         .then(res => {
-          const processed = res.ticket.processed;
+          const { processed } = res.ticket;
 
-          this.setState({ processed });
+          this.setState(prevState => {
+            const { ticketInfo } = prevState;
+            ticketInfo.processed = processed;
+            return ticketInfo;
+          });
 
           if (processed) {
             this.stopAutomaticRefreshing();
@@ -47,13 +52,10 @@ export default class Ticket extends Component {
   };
 
   render() {
+    const { ticketInfo } = this.state;
     return (
       <>
-        <Screenshot
-          ticketID={this.state.ticketID}
-          url={this.state.url}
-          processed={this.state.processed}
-        />
+        <Screenshot ticketInfo={ticketInfo} />
       </>
     );
   }
