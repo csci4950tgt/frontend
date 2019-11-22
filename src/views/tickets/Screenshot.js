@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Header, Image, Segment } from 'semantic-ui-react';
+import { Image, Segment } from 'semantic-ui-react';
 
 export default class Screenshot extends Component {
   render() {
