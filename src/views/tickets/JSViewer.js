@@ -27,15 +27,19 @@ export default class CodeBlock extends Component {
           const artifacts = res.fileArtifacts.filter(artifact =>
             artifact.filename.endsWith('.js')
           );
+
           const numberOfFiles = artifacts.count;
+
           for (let i in artifacts) {
             const name = artifacts[i].filename;
+
             if (
               this.fileList.find(i => {
                 return i.key === name;
               }) === undefined
             ) {
               const fileURL = `http://localhost:8080/api/tickets/${this.props.ticketID}/artifacts/${name}`;
+
               fetch(fileURL, {
                 method: 'GET',
                 responseType: 'text',
@@ -47,6 +51,7 @@ export default class CodeBlock extends Component {
                     text: <span className="text">{name}</span>,
                     value: beautify(res),
                   });
+
                   if (this.fileList.count === numberOfFiles) {
                     this.setState({ ready: true });
                   }

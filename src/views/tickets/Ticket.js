@@ -17,10 +17,12 @@ export default class Ticket extends Component {
       },
       currentCode: '',
     };
+
     this.refreshInterval = setInterval(
       this.refreshTicketState,
       REFRESH_EVERY_MS
     );
+
     this.refreshTicketState();
   }
 
