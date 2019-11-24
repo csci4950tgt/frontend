@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "js-beautify": "^1.10.2",
     "moment": "^2.24.0",
     "perms": "^0.1.0",
     "react": "^16.9.0",
+    "react-ace": "^8.0.0",
     "react-dom": "^16.9.0",
     "react-moment": "^0.9.6",
     "react-router-dom": "^5.1.2",
