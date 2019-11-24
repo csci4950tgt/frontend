@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
+import { Loader, Placeholder, Segment } from 'semantic-ui-react';
+
 import Screenshot from './Screenshot';
+import JSViewer from './JSViewer';
 
 const REFRESH_EVERY_MS = 1000;
 
@@ -12,14 +15,19 @@ export default class Ticket extends Component {
         ticketID: props.match.params.ticketID,
         processed: false,
       },
-      refreshInterval: setInterval(this.refreshTicketState, REFRESH_EVERY_MS),
+      currentCode: '',
     };
+
+    this.refreshInterval = setInterval(
+      this.refreshTicketState,
+      REFRESH_EVERY_MS
+    );
 
     this.refreshTicketState();
   }
 
   stopAutomaticRefreshing() {
-    clearInterval(this.state.refreshInterval);
+    clearInterval(this.refreshInterval);
   }
 
   componentWillUnmount() {
@@ -51,11 +59,46 @@ export default class Ticket extends Component {
     }
   };
 
+  onFileSelectionChange = (e, data) => {
+    this.setState({ currentCode: data.value });
+  };
+
   render() {
     const { ticketInfo } = this.state;
     return (
       <>
-        <Screenshot ticketInfo={ticketInfo} />
+        {!this.state.ticketInfo.processed && (
+          <div>
+            <Loader
+              active
+              inline
+              content="The ticket is being processed. Please wait."
+            />
+            <Segment inverted>
+              <Placeholder fluid inverted>
+                <Placeholder.Image />
+                <Placeholder.Paragraph>
+                  <Placeholder.Line />
+                  <Placeholder.Line />
+                  <Placeholder.Line />
+                  <Placeholder.Line />
+                  <Placeholder.Line />
+                  <Placeholder.Line />
+                </Placeholder.Paragraph>
+              </Placeholder>
+            </Segment>
+          </div>
+        )}
+        {this.state.ticketInfo.processed && (
+          <>
+            <Screenshot ticketID={ticketInfo.ticketID} />
+            <JSViewer
+              ticketID={ticketInfo.ticketID}
+              onFileSelectionChange={this.onFileSelectionChange}
+              code={this.state.currentCode}
+            />
+          </>
+        )}
       </>
     );
   }
