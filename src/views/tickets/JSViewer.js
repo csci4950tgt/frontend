@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Dropdown } from 'semantic-ui-react';
+import { Dropdown, Message } from 'semantic-ui-react';
 
 import AceEditor from 'react-ace';
 import { js as beautify } from 'js-beautify';
@@ -12,7 +12,7 @@ export default class CodeBlock extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ready: false,
+      filesBeingBlocked: false,
     };
   }
 
@@ -28,8 +28,6 @@ export default class CodeBlock extends Component {
             artifact.filename.endsWith('.js')
           );
 
-          const numberOfFiles = artifacts.count;
-
           for (let i in artifacts) {
             const name = artifacts[i].filename;
 
@@ -39,7 +37,6 @@ export default class CodeBlock extends Component {
               }) === undefined
             ) {
               const fileURL = `http://localhost:8080/api/tickets/${this.props.ticketID}/artifacts/${name}`;
-
               fetch(fileURL, {
                 method: 'GET',
                 responseType: 'text',
@@ -51,10 +48,22 @@ export default class CodeBlock extends Component {
                     text: <span className="text">{name}</span>,
                     value: beautify(res),
                   });
-
-                  if (this.fileList.count === numberOfFiles) {
-                    this.setState({ ready: true });
-                  }
+                })
+                .catch(error => {
+                  this.setState({ filesBeingBlocked: true });
+                  this.fileList.push({
+                    key: name,
+                    text: (
+                      <span className="text">
+                        {name + ' (blocked by the adblocker)'}
+                      </span>
+                    ),
+                    value: 'dummy value',
+                    // if we don't put value and this disabled entry is the first one, it will be pre-selected and highlighted
+                    // see https://github.com/Semantic-Org/Semantic-UI-React/issues/3130#issuecomment-530703465
+                    disabled: true,
+                  });
+                  console.log(error);
                 });
             }
           }
@@ -75,6 +84,17 @@ export default class CodeBlock extends Component {
   render() {
     return (
       <>
+        {this.state.filesBeingBlocked && (
+          <Message negative style={{ textAlign: 'left' }}>
+            <Message.Header>
+              One or more JavaScript files are blocked by your adblocker.
+            </Message.Header>
+            <p>
+              If you want to see all the files, please disable your adblocker
+              and refresh this page.
+            </p>
+          </Message>
+        )}
         <Dropdown
           placeholder="Select a File"
           fluid
