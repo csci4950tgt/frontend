@@ -57,14 +57,22 @@ export default class RecentTickets extends Component {
                 <tr>
                   <th colSpan="5">
                     <div className="ui right floated pagination menu">
-                      <a className="icon item">
+                      <a className="icon item" href={'/#'}>
                         <i className="left chevron icon"></i>
                       </a>
-                      <a className="item">1</a>
-                      <a className="item">2</a>
-                      <a className="item">3</a>
-                      <a className="item">4</a>
-                      <a className="icon item">
+                      <a className="item" href={'/#page1'}>
+                        1
+                      </a>
+                      <a className="item" href={'/#page2'}>
+                        2
+                      </a>
+                      <a className="item" href={'/#page3'}>
+                        3
+                      </a>
+                      <a className="item" href={'/#page4'}>
+                        4
+                      </a>
+                      <a className="icon item" href={'/#page2'}>
                         <i className="right chevron icon"></i>
                       </a>
                     </div>
