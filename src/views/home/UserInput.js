@@ -39,13 +39,13 @@ export default class UserInput extends Component {
   onFormSubmit = async e => {
     e.preventDefault();
     const body = JSON.stringify(this.state);
-    const res = await createTicket(body);
-    if (!res) {
-      console.error('Error creating ticket!!');
-      // TODO: let user know about error
-    } else {
-      console.log(res);
+
+    try {
+      const res = await createTicket(body);
+
       this.setState({ newTicket: res.ticket });
+    } catch (error) {
+      // TODO: let user know about the error
     }
   };
   render() {
