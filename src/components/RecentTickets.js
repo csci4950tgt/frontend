@@ -11,7 +11,10 @@ const recentTickets = {
 export default class RecentTickets extends Component {
   constructor(props) {
     super(props);
-    this.state = { lastResponse: null, lastError: null };
+    this.state = {
+      lastResponse: null,
+      lastError: null,
+    };
   }
 
   render() {
@@ -31,7 +34,7 @@ export default class RecentTickets extends Component {
             {this.state.lastResponse.length > 0 ? (
               <div>
                 <h3>Recent Tickets:</h3>
-                <table className="ui celled padded table">
+                <table className="ui unstackable celled padded table">
                   <thead>
                     <tr>
                       <th>URL</th>
@@ -43,7 +46,11 @@ export default class RecentTickets extends Component {
                   <tbody>
                     {this.state.lastResponse.map(ticket => (
                       <tr key={ticket.ID}>
-                        <td>{ticket.url}</td>
+                        <td>
+                          {ticket.url.length > 30
+                          ? ticket.url.substring(0, 30) + '...'
+                          : ticket.url}
+                        </td>
                         <td>
                           <Moment date={ticket.CreatedAt} fromNow />
                         </td>
