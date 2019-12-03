@@ -1,4 +1,4 @@
-const API_STUB = process.env.API_STUP || 'http://localhost:8080/api';
+const API_STUB = process.env.API_STUB || 'http://localhost:8080/api';
 
 const throwIfNot200 = res => {
   if (res.status >= 200 && res.status < 300) {
