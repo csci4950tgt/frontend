@@ -31,7 +31,7 @@ export default class RecentTickets extends Component {
         {this.state.lastResponse ? (
           <div>
             <h3>Recent Tickets:</h3>
-            <table class="ui unstackable celled padded table">
+            <table className="ui unstackable celled padded table">
               <thead>
                 <tr>
                   <th>URL</th>
