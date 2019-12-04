@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Moment from 'react-moment';
 import { Link } from 'react-router-dom';
+import { getTicketListing } from '../utils/api.js';
 
 const recentTickets = {
   display: 'inline-block',
@@ -30,63 +31,71 @@ export default class RecentTickets extends Component {
 
         {this.state.lastResponse ? (
           <div>
-            <h3>Recent Tickets:</h3>
-            <table className="ui unstackable celled padded table">
-              <thead>
-                <tr>
-                  <th>URL</th>
-                  <th>Submitted</th>
-                  <th>Processed</th>
-                  <th>Output</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.state.lastResponse.map(ticket => (
-                  <tr key={ticket.ID}>
-                    <td>
-                      {ticket.url.length > 30
-                        ? ticket.url.substring(0, 30) + '...'
-                        : ticket.url}
-                    </td>
-                    <td>
-                      <Moment date={ticket.CreatedAt} fromNow />
-                    </td>
-                    <td>{ticket.processed ? 'Yes' : 'No'}</td>
-                    <td>
-                      <Link to={`/tickets/${ticket.ID}`}>
-                        Ticket #{ticket.ID}
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th colSpan="5">
-                    <div className="ui right floated pagination menu">
-                      <a className="icon item" href={'/#'}>
-                        <i className="left chevron icon"></i>
-                      </a>
-                      <a className="item" href={'/#page1'}>
-                        1
-                      </a>
-                      <a className="item" href={'/#page2'}>
-                        2
-                      </a>
-                      <a className="item" href={'/#page3'}>
-                        3
-                      </a>
-                      <a className="item" href={'/#page4'}>
-                        4
-                      </a>
-                      <a className="icon item" href={'/#page2'}>
-                        <i className="right chevron icon"></i>
-                      </a>
-                    </div>
-                  </th>
-                </tr>
-              </tfoot>
-            </table>
+            {this.state.lastResponse.length > 0 ? (
+              <div>
+                <h3>Recent Tickets:</h3>
+                <table className="ui unstackable celled padded table">
+                  <thead>
+                    <tr>
+                      <th>URL</th>
+                      <th>Submitted</th>
+                      <th>Processed</th>
+                      <th>Output</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {this.state.lastResponse.map(ticket => (
+                      <tr key={ticket.ID}>
+                        <td>
+                          {ticket.url.length > 30
+                          ? ticket.url.substring(0, 30) + '...'
+                          : ticket.url}
+                        </td>
+                        <td>
+                          <Moment date={ticket.CreatedAt} fromNow />
+                        </td>
+                        <td>{ticket.processed ? 'Yes' : 'No'}</td>
+                        <td>
+                          <Link to={`/tickets/${ticket.ID}`}>
+                            Ticket #{ticket.ID}
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <th colSpan="5">
+                        <div className="ui right floated pagination menu">
+                          <a className="icon item" href={'/#'}>
+                            <i className="left chevron icon"></i>
+                          </a>
+                          <a className="item" href={'/#page1'}>
+                            1
+                          </a>
+                          <a className="item" href={'/#page2'}>
+                            2
+                          </a>
+                          <a className="item" href={'/#page3'}>
+                            3
+                          </a>
+                          <a className="item" href={'/#page4'}>
+                            4
+                          </a>
+                          <a className="icon item" href={'/#page2'}>
+                            <i className="right chevron icon"></i>
+                          </a>
+                        </div>
+                      </th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            ) : (
+              <div>
+                <i>(No Recent Tickets)</i>
+              </div>
+            )}
           </div>
         ) : null}
       </div>
@@ -99,27 +108,15 @@ export default class RecentTickets extends Component {
 
   async refresh() {
     try {
-      // console.log('Requesting listing of recent tickets from server...');
+      const tickets = await getTicketListing();
 
-      const ticketsResponse = await fetch(
-        'http://localhost:8080/api/tickets'
-      ).then(res => res.json());
-
-      // console.log('Received ticket listing response from server:');
-      // console.log(ticketsResponse);
-
-      if (ticketsResponse.success) {
-        this.setState({
-          lastError: null,
-          lastResponse: ticketsResponse.tickets,
-        });
-      } else {
-        throw new Error(`Server returned error: ${ticketsResponse.message}`);
-      }
+      this.setState({
+        lastError: null,
+        lastResponse: tickets.tickets,
+      });
     } catch (error) {
       this.setState({ lastError: error.message, lastResponse: null });
 
-      console.log('Failed to load recent tickets:');
       console.log(error);
     }
   }

@@ -3,6 +3,7 @@ import { Loader, Placeholder, Segment } from 'semantic-ui-react';
 
 import Screenshot from './Screenshot';
 import JSViewer from './JSViewer';
+import { getTicket } from '../../utils/api.js';
 
 const REFRESH_EVERY_MS = 1000;
 
@@ -36,26 +37,19 @@ export default class Ticket extends Component {
   }
 
   refreshTicketState = async e => {
-    const ticketURL = `http://localhost:8080/api/tickets/${this.state.ticketInfo.ticketID}`;
+    const ticketId = this.state.ticketInfo.ticketID;
 
     try {
-      fetch(ticketURL, { method: 'GET' })
-        .then(res => res.json())
-        .then(res => {
-          const { processed } = res.ticket;
+      const ticket = await getTicket(ticketId);
+      const { processed } = ticket.ticket;
 
-          this.setState(prevState => {
-            const { ticketInfo } = prevState;
-            ticketInfo.processed = processed;
-            return ticketInfo;
-          });
+      this.setState({ ticketInfo: { ...this.state.ticketInfo, processed } });
 
-          if (processed) {
-            this.stopAutomaticRefreshing();
-          }
-        });
+      if (processed) {
+        this.stopAutomaticRefreshing();
+      }
     } catch (error) {
-      console.log(error);
+      // todo: display the error on the page
     }
   };
 
@@ -73,6 +67,7 @@ export default class Ticket extends Component {
               active
               inline
               content="The ticket is being processed. Please wait."
+              style={{ marginBottom: '50px' }}
             />
             <Segment inverted>
               <Placeholder fluid inverted>
