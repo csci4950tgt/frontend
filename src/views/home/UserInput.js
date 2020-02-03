@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Input, Button, Form, Header } from 'semantic-ui-react';
+import { Button, Form, Header, Icon } from 'semantic-ui-react';
 import { Redirect } from 'react-router-dom';
 import { createTicket } from '../../utils/api';
 
@@ -12,14 +12,22 @@ const inputStyle = {
 
 export default class UserInput extends Component {
   state = {
-    name: 'Example ticket',
     url: '',
     screenshot: {
       height: '',
       width: '',
-      filename: 'screenshot.png',
     },
     newTicket: null,
+    showOptions: false,
+  };
+
+  showOptions = e => {
+    //e.preventDefault();
+    if (this.state.showOptions) {
+      this.setState({ showOptions: false });
+    } else {
+      this.setState({ showOptions: true });
+    }
   };
   //for multiple on forms on a field
   onChange = e => {
@@ -39,21 +47,25 @@ export default class UserInput extends Component {
   onFormSubmit = async e => {
     e.preventDefault();
     const body = JSON.stringify(this.state);
-
-    try {
-      const res = await createTicket(body);
-
+    const res = await createTicket(body);
+    if (!res) {
+      console.error('Error creating ticket!!');
+      // TODO: let user know about error
+    } else {
+      console.log(res);
       this.setState({ newTicket: res.ticket });
-    } catch (error) {
-      // TODO: let user know about the error
     }
   };
+
   render() {
     const { newTicket } = this.state;
+    let screenshot = this.state.screenshot;
     return (
       <div>
         {newTicket ? (
-          <Redirect to={`/tickets/${newTicket.ID}`} />
+          <Redirect
+            to={`/tickets/${newTicket.ID}/${screenshot.height}/${screenshot.width}`}
+          />
         ) : (
           <>
             <Header as="h3"> Enter Parameters:</Header>
@@ -61,33 +73,55 @@ export default class UserInput extends Component {
               onSubmit={this.onFormSubmit}
               style={{ display: 'inline-block' }}
             >
-              <Input
-                style={inputStyle}
-                type="url"
-                name="url"
-                required
-                placeholder="http://mysite.com"
-                value={this.state.url}
-                onChange={this.onChange}
-              />
+              <Form.Group inline>
+                <label style={{ padding: '10px' }}>Url:</label>
+                <Form.Input
+                  style={inputStyle}
+                  type="url"
+                  name="url"
+                  required
+                  placeholder="http://mysite.com"
+                  value={this.state.url}
+                  onChange={this.onChange}
+                />
+                <Button content="Submit" />
+                <Button
+                  type="button"
+                  onClick={this.showOptions}
+                  color="teal"
+                  icon
+                >
+                  <Icon name="cog" />
+                  Options
+                </Button>
+              </Form.Group>
 
-              {/*<input
-            style={inputStyle}
-            type="text"
-            name="width"
-            placeholder="Enter an image width"
-            value={this.state.screenshot.width}
-            onChange={this.onChange}
-          />
-          <input
-            style={inputStyle}
-            type="text"
-            name="height"
-            placeholder=" Enter an image height"
-            value={this.state.screenshot.height}
-            onChange={this.onChange}
-          /> */}
-              <Button content="Submit" />
+              {this.state.showOptions && (
+                <Form.Group inline>
+                  <label>Width:</label>
+                  <Form.Input
+                    style={inputStyle}
+                    type="text"
+                    name="width"
+                    placeholder="Enter an image width"
+                    value={this.state.screenshot.width}
+                    onChange={this.onChange}
+                  />
+                </Form.Group>
+              )}
+              {this.state.showOptions && (
+                <Form.Group inline>
+                  <label>Height:</label>
+                  <Form.Input
+                    style={inputStyle}
+                    type="text"
+                    name="height"
+                    placeholder=" Enter an image height"
+                    value={this.state.screenshot.height}
+                    onChange={this.onChange}
+                  />
+                </Form.Group>
+              )}
             </Form>
           </>
         )}

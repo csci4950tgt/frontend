@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Loader, Placeholder, Segment } from 'semantic-ui-react';
+import { Loader, Placeholder, Segment, Divider } from 'semantic-ui-react';
 
 import Screenshot from './Screenshot';
 import JSViewer from './JSViewer';
@@ -10,11 +10,12 @@ const REFRESH_EVERY_MS = 1000;
 export default class Ticket extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       ticketInfo: {
         ticketID: props.match.params.ticketID,
         processed: false,
+        height: props.match.params.height,
+        width: props.match.params.width,
       },
       currentCode: '',
     };
@@ -86,7 +87,12 @@ export default class Ticket extends Component {
         )}
         {this.state.ticketInfo.processed && (
           <>
-            <Screenshot ticketID={ticketInfo.ticketID} />
+            <Screenshot
+              ticketID={ticketInfo.ticketID}
+              height={ticketInfo.height}
+              width={ticketInfo.width}
+            />
+            <Divider hidden />
             <JSViewer
               ticketID={ticketInfo.ticketID}
               onFileSelectionChange={this.onFileSelectionChange}
