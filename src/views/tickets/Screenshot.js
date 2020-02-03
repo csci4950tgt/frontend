@@ -4,7 +4,14 @@ import { getArtifactURL } from '../../utils/api.js';
 
 export default class Screenshot extends Component {
   render() {
-    let image;
+    let image = (
+      <Image
+        alt="fullpage screenshot"
+        src={getArtifactURL(this.props.ticketID, 'screenshotFull.png')}
+        fluid
+        bordered
+      />
+    );
     //if there is a heigth/width apply it else the image is fluid
     if (this.props.height != null && this.props.width != null) {
       image = (
@@ -17,19 +24,10 @@ export default class Screenshot extends Component {
           bordered
         />
       );
-    } else {
-      image = (
-        <Image
-          alt="fullpage screenshot"
-          src={getArtifactURL(this.props.ticketID, 'screenshotFull.png')}
-          fluid
-          bordered
-        />
-      );
     }
     return (
       <Grid columns={1} centered padded>
-        <Segment compact>{image}</Segment>
+        <Segment compact> {image}</Segment>
       </Grid>
     );
   }
