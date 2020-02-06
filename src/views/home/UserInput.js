@@ -12,10 +12,16 @@ const inputStyle = {
 
 export default class UserInput extends Component {
   state = {
-    url: '',
-    screenshot: {
-      height: '',
-      width: '',
+    ticket: {
+      url: '',
+      screenshot: [
+        {
+          height: '',
+          width: '',
+          filename: '',
+          userAgent: '',
+        },
+      ],
     },
     newTicket: null,
     showOptions: false,
@@ -32,7 +38,7 @@ export default class UserInput extends Component {
   //for multiple on forms on a field
   onChange = e => {
     if (e.target.name === 'width' || e.target.name === 'height') {
-      var screenshotProp = this.state.screenshot;
+      var screenshotProp = this.state.ticket.screenshot[0];
       if (e.target.name === 'width') {
         screenshotProp.width = e.target.value;
       } else {
@@ -40,13 +46,17 @@ export default class UserInput extends Component {
       }
       this.setState({ screenshotProp });
     } else {
-      this.setState({ [e.target.name]: e.target.value });
+      var ticket = { ...this.state.ticket };
+      ticket.url = e.target.value;
+      this.setState({ ticket });
+      //this.setState({ this.state.ticket.url: e.target.value });
     }
   };
 
   onFormSubmit = async e => {
     e.preventDefault();
-    const body = JSON.stringify(this.state);
+    const body = JSON.stringify(this.state.ticket);
+    //debugger;
     const res = await createTicket(body);
     if (!res) {
       console.error('Error creating ticket!!');
@@ -54,18 +64,16 @@ export default class UserInput extends Component {
     } else {
       console.log(res);
       this.setState({ newTicket: res.ticket });
+      //debugger;
     }
   };
 
   render() {
     const { newTicket } = this.state;
-    let screenshot = this.state.screenshot;
     return (
       <div>
         {newTicket ? (
-          <Redirect
-            to={`/tickets/${newTicket.ID}/${screenshot.height}/${screenshot.width}`}
-          />
+          <Redirect to={`/tickets/${newTicket.ID}`} />
         ) : (
           <>
             <Header as="h3"> Enter Parameters:</Header>
@@ -81,7 +89,7 @@ export default class UserInput extends Component {
                   name="url"
                   required
                   placeholder="http://mysite.com"
-                  value={this.state.url}
+                  value={this.state.ticket.url}
                   onChange={this.onChange}
                 />
                 <Button content="Submit" />
@@ -104,7 +112,7 @@ export default class UserInput extends Component {
                     type="text"
                     name="width"
                     placeholder="Enter an image width"
-                    value={this.state.screenshot.width}
+                    value={this.state.ticket.screenshot[0].width}
                     onChange={this.onChange}
                   />
                 </Form.Group>
@@ -117,7 +125,7 @@ export default class UserInput extends Component {
                     type="text"
                     name="height"
                     placeholder=" Enter an image height"
-                    value={this.state.screenshot.height}
+                    value={this.state.ticket.screenshot[0].height}
                     onChange={this.onChange}
                   />
                 </Form.Group>

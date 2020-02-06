@@ -14,7 +14,7 @@ const NestedTicketRoutes = ({ path }) => (
       <Header as="h5">Please select a ticket.</Header>
       <RecentTickets />
     </Route>
-    <Route path={`${path}/:ticketID/:height?/:width?`} component={Ticket} />
+    <Route path={`${path}/:ticketID`} component={Ticket} />
   </Switch>
 );
 
