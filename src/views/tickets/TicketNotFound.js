@@ -8,8 +8,8 @@ const TicketNotFound = ({ ticketID, errCode }) => {
       <h1>
         {' '}
         We're sorry! There is something wrong with ticket{' '}
-        <code>{ticketID}</code> (Error Code: <code>{errCode}</code>), please the
-        ticket exists or not.{' '}
+        <code>{ticketID}</code> (Error Code: <code>{errCode}</code>), please
+        check the ticket exists or not.{' '}
       </h1>
       <Link to="/">Return to Homepage</Link>
     </div>
