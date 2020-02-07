@@ -18,7 +18,7 @@ export default class Ticket extends Component {
         processed: false,
       },
       currentCode: '',
-      hasError: false,
+      hasError: '',
     };
 
     this.refreshInterval = setInterval(
@@ -51,8 +51,7 @@ export default class Ticket extends Component {
         this.stopAutomaticRefreshing();
       }
     } catch (error) {
-      // todo: display the error on the page
-      this.setState({ hasError: true });
+      this.setState({ hasError: error.message });
     }
   };
 
@@ -61,13 +60,18 @@ export default class Ticket extends Component {
   };
 
   static getDerivedStateFromError = error => {
-    this.setState({ hasError: true });
+    this.setState({ hasError: error.message });
   };
 
   render() {
     const { ticketInfo } = this.state;
-    if (this.state.hasError) {
-      return <TicketNotFound ticketID={ticketInfo.ticketID} errCode={404} />;
+    if (this.state.hasError != '') {
+      return (
+        <TicketNotFound
+          ticketID={ticketInfo.ticketID}
+          errMessage={this.state.hasError}
+        />
+      );
     } else {
       return (
         <>
