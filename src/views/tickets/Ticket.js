@@ -65,7 +65,7 @@ export default class Ticket extends Component {
 
   render() {
     const { ticketInfo } = this.state;
-    if (this.state.hasError != '') {
+    if (this.state.hasError !== '') {
       return (
         <TicketNotFound
           ticketID={ticketInfo.ticketID}

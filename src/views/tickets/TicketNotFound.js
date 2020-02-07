@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-// TODO: Should we add the error code?
 const TicketNotFound = ({ ticketID, errMessage }) => {
   return (
     <div>
