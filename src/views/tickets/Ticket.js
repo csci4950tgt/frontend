@@ -4,6 +4,7 @@ import { Loader, Placeholder, Segment } from 'semantic-ui-react';
 import Screenshot from './Screenshot';
 import JSViewer from './JSViewer';
 import { getTicket } from '../../utils/api.js';
+import SafeBrowsing from './SafeBrowsing';
 
 const REFRESH_EVERY_MS = 1000;
 
@@ -91,6 +92,9 @@ export default class Ticket extends Component {
               ticketID={ticketInfo.ticketID}
               onFileSelectionChange={this.onFileSelectionChange}
               code={this.state.currentCode}
+            />
+            <SafeBrowsing
+            // matches={ticket.ticket.malwareMatches}
             />
           </>
         )}
