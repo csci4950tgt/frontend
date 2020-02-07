@@ -4,6 +4,7 @@ import { Loader, Placeholder, Segment } from 'semantic-ui-react';
 import Screenshot from './Screenshot';
 import JSViewer from './JSViewer';
 import { getTicket } from '../../utils/api.js';
+import TicketNotFound from './TicketNotFound';
 
 const REFRESH_EVERY_MS = 1000;
 
@@ -17,6 +18,7 @@ export default class Ticket extends Component {
         processed: false,
       },
       currentCode: '',
+      hasError: false,
     };
 
     this.refreshInterval = setInterval(
@@ -50,6 +52,7 @@ export default class Ticket extends Component {
       }
     } catch (error) {
       // todo: display the error on the page
+      this.setState({ hasError: true });
     }
   };
 
@@ -57,44 +60,52 @@ export default class Ticket extends Component {
     this.setState({ currentCode: data.value });
   };
 
+  static getDerivedStateFromError = error => {
+    this.setState({ hasError: true });
+  };
+
   render() {
     const { ticketInfo } = this.state;
-    return (
-      <>
-        {!this.state.ticketInfo.processed && (
-          <div>
-            <Loader
-              active
-              inline
-              content="The ticket is being processed. Please wait."
-              style={{ marginBottom: '50px' }}
-            />
-            <Segment inverted>
-              <Placeholder fluid inverted>
-                <Placeholder.Image />
-                <Placeholder.Paragraph>
-                  <Placeholder.Line />
-                  <Placeholder.Line />
-                  <Placeholder.Line />
-                  <Placeholder.Line />
-                  <Placeholder.Line />
-                  <Placeholder.Line />
-                </Placeholder.Paragraph>
-              </Placeholder>
-            </Segment>
-          </div>
-        )}
-        {this.state.ticketInfo.processed && (
-          <>
-            <Screenshot ticketID={ticketInfo.ticketID} />
-            <JSViewer
-              ticketID={ticketInfo.ticketID}
-              onFileSelectionChange={this.onFileSelectionChange}
-              code={this.state.currentCode}
-            />
-          </>
-        )}
-      </>
-    );
+    if (this.state.hasError) {
+      return <TicketNotFound ticketID={ticketInfo.ticketID} errCode={404} />;
+    } else {
+      return (
+        <>
+          {!this.state.ticketInfo.processed && (
+            <div>
+              <Loader
+                active
+                inline
+                content="The ticket is being processed. Please wait."
+                style={{ marginBottom: '50px' }}
+              />
+              <Segment inverted>
+                <Placeholder fluid inverted>
+                  <Placeholder.Image />
+                  <Placeholder.Paragraph>
+                    <Placeholder.Line />
+                    <Placeholder.Line />
+                    <Placeholder.Line />
+                    <Placeholder.Line />
+                    <Placeholder.Line />
+                    <Placeholder.Line />
+                  </Placeholder.Paragraph>
+                </Placeholder>
+              </Segment>
+            </div>
+          )}
+          {this.state.ticketInfo.processed && (
+            <>
+              <Screenshot ticketID={ticketInfo.ticketID} />
+              <JSViewer
+                ticketID={ticketInfo.ticketID}
+                onFileSelectionChange={this.onFileSelectionChange}
+                code={this.state.currentCode}
+              />
+            </>
+          )}
+        </>
+      );
+    }
   }
 }
