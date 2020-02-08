@@ -18,7 +18,7 @@ export default class UserInput extends Component {
         {
           height: 0,
           width: 0,
-          filename: '',
+          filename: 'screenshot.png',
           userAgent: '',
         },
       ],
@@ -28,7 +28,6 @@ export default class UserInput extends Component {
   };
 
   showOptions = e => {
-    //e.preventDefault();
     if (this.state.showOptions) {
       this.setState({ showOptions: false });
     } else {
@@ -49,14 +48,12 @@ export default class UserInput extends Component {
       var ticket = { ...this.state.ticket };
       ticket.url = e.target.value;
       this.setState({ ticket });
-      //this.setState({ this.state.ticket.url: e.target.value });
     }
   };
 
   onFormSubmit = async e => {
     e.preventDefault();
     const body = JSON.stringify(this.state.ticket);
-    //debugger;
     const res = await createTicket(body);
     if (!res) {
       console.error('Error creating ticket!!');
@@ -64,7 +61,6 @@ export default class UserInput extends Component {
     } else {
       console.log(res);
       this.setState({ newTicket: res.ticket });
-      //debugger;
     }
   };
 
