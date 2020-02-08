@@ -14,7 +14,7 @@ export default class UserInput extends Component {
   state = {
     ticket: {
       url: '',
-      screenshot: [
+      screenshots: [
         {
           height: '',
           width: '',
@@ -38,7 +38,7 @@ export default class UserInput extends Component {
   //for multiple on forms on a field
   onChange = e => {
     if (e.target.name === 'width' || e.target.name === 'height') {
-      var screenshotProp = this.state.ticket.screenshot[0];
+      var screenshotProp = this.state.ticket.screenshots[0];
       if (e.target.name === 'width') {
         screenshotProp.width = e.target.value;
       } else {
@@ -112,7 +112,7 @@ export default class UserInput extends Component {
                     type="text"
                     name="width"
                     placeholder="Enter an image width"
-                    value={this.state.ticket.screenshot[0].width}
+                    value={this.state.ticket.screenshots[0].width}
                     onChange={this.onChange}
                   />
                 </Form.Group>
@@ -125,7 +125,7 @@ export default class UserInput extends Component {
                     type="text"
                     name="height"
                     placeholder=" Enter an image height"
-                    value={this.state.ticket.screenshot[0].height}
+                    value={this.state.ticket.screenshots[0].height}
                     onChange={this.onChange}
                   />
                 </Form.Group>
