@@ -16,8 +16,8 @@ export default class UserInput extends Component {
       url: '',
       screenshots: [
         {
-          height: '',
-          width: '',
+          height: 0,
+          width: 0,
           filename: '',
           userAgent: '',
         },
@@ -40,9 +40,9 @@ export default class UserInput extends Component {
     if (e.target.name === 'width' || e.target.name === 'height') {
       var screenshotProp = this.state.ticket.screenshots[0];
       if (e.target.name === 'width') {
-        screenshotProp.width = e.target.value;
+        screenshotProp.width = parseInt(e.target.value);
       } else {
-        screenshotProp.height = e.target.value;
+        screenshotProp.height = parseInt(e.target.value);
       }
       this.setState({ screenshotProp });
     } else {
@@ -112,7 +112,6 @@ export default class UserInput extends Component {
                     type="text"
                     name="width"
                     placeholder="Enter an image width"
-                    value={this.state.ticket.screenshots[0].width}
                     onChange={this.onChange}
                   />
                 </Form.Group>
@@ -125,7 +124,6 @@ export default class UserInput extends Component {
                     type="text"
                     name="height"
                     placeholder=" Enter an image height"
-                    value={this.state.ticket.screenshots[0].height}
                     onChange={this.onChange}
                   />
                 </Form.Group>
