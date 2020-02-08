@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import { Image, Segment, Grid } from 'semantic-ui-react';
-import {
-  getTicket,
-  getArtifactListing,
-  getArtifactURL,
-} from '../../utils/api.js';
+import { getTicket, getArtifactURL } from '../../utils/api.js';
 
 export default class Screenshot extends Component {
   state = {
@@ -37,7 +33,7 @@ export default class Screenshot extends Component {
       />
     );
     //if there is a heigth/width apply it else the image is fluid
-    if (this.state.height != 0 && this.state.width != 0) {
+    if (this.state.height !== 0 && this.state.width !== 0) {
       image = (
         <Image
           alt="fullpage screenshot"
