@@ -18,6 +18,7 @@ export default class Ticket extends Component {
         processed: false,
       },
       currentCode: '',
+      malwareMatches: {},
     };
 
     this.refreshInterval = setInterval(
@@ -44,7 +45,10 @@ export default class Ticket extends Component {
       const ticket = await getTicket(ticketId);
       const { processed } = ticket.ticket;
 
-      this.setState({ ticketInfo: { ...this.state.ticketInfo, processed } });
+      this.setState({
+        ticketInfo: { ...this.state.ticketInfo, processed },
+        malwareMatches: JSON.parse(ticket.ticket.malwareMatches),
+      });
 
       if (processed) {
         this.stopAutomaticRefreshing();
@@ -62,7 +66,7 @@ export default class Ticket extends Component {
     const { ticketInfo } = this.state;
     return (
       <>
-        {!this.state.ticketInfo.processed && (
+        {!ticketInfo.processed && (
           <div>
             <Loader
               active
@@ -85,7 +89,7 @@ export default class Ticket extends Component {
             </Segment>
           </div>
         )}
-        {this.state.ticketInfo.processed && (
+        {ticketInfo.processed && (
           <>
             <Screenshot ticketID={ticketInfo.ticketID} />
             <JSViewer
@@ -93,9 +97,7 @@ export default class Ticket extends Component {
               onFileSelectionChange={this.onFileSelectionChange}
               code={this.state.currentCode}
             />
-            <SafeBrowsing
-            // matches={ticket.ticket.malwareMatches}
-            />
+            <SafeBrowsing matches={this.state.malwareMatches} />
           </>
         )}
       </>
