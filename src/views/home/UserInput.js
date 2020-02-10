@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Input, Button, Form, Header } from 'semantic-ui-react';
+import { Button, Form, Header, Icon } from 'semantic-ui-react';
 import { Redirect } from 'react-router-dom';
 import { createTicket } from '../../utils/api';
 
@@ -12,42 +12,58 @@ const inputStyle = {
 
 export default class UserInput extends Component {
   state = {
-    name: 'Example ticket',
-    url: '',
-    screenshot: {
-      height: '',
-      width: '',
-      filename: 'screenshot.png',
+    ticket: {
+      url: '',
+      screenshots: [
+        {
+          height: 0,
+          width: 0,
+          filename: 'screenshot.png',
+          userAgent: '',
+        },
+      ],
     },
     newTicket: null,
+    showOptions: false,
+  };
+
+  showOptions = e => {
+    if (this.state.showOptions) {
+      this.setState({ showOptions: false });
+    } else {
+      this.setState({ showOptions: true });
+    }
   };
   //for multiple on forms on a field
   onChange = e => {
     if (e.target.name === 'width' || e.target.name === 'height') {
-      var screenshotProp = this.state.screenshot;
+      var screenshotProp = this.state.ticket.screenshots[0];
       if (e.target.name === 'width') {
-        screenshotProp.width = e.target.value;
+        screenshotProp.width = parseInt(e.target.value);
       } else {
-        screenshotProp.height = e.target.value;
+        screenshotProp.height = parseInt(e.target.value);
       }
       this.setState({ screenshotProp });
     } else {
-      this.setState({ [e.target.name]: e.target.value });
+      var ticket = { ...this.state.ticket };
+      ticket.url = e.target.value;
+      this.setState({ ticket });
     }
   };
 
   onFormSubmit = async e => {
     e.preventDefault();
-    const body = JSON.stringify(this.state);
-
-    try {
-      const res = await createTicket(body);
-
+    const body = JSON.stringify(this.state.ticket);
+    const res = await createTicket(body);
+    if (!res) {
+      console.error('Error creating ticket!!');
+      // TODO: let user know about error
+    } else {
+      console.log(res);
       this.setState({ newTicket: res.ticket });
-    } catch (error) {
-      // TODO: let user know about the error
     }
   };
+
   render() {
     const { newTicket } = this.state;
     return (
@@ -61,33 +77,53 @@ export default class UserInput extends Component {
               onSubmit={this.onFormSubmit}
               style={{ display: 'inline-block' }}
             >
-              <Input
-                style={inputStyle}
-                type="url"
-                name="url"
-                required
-                placeholder="http://mysite.com"
-                value={this.state.url}
-                onChange={this.onChange}
-              />
+              <Form.Group inline>
+                <label style={{ padding: '10px' }}>Url:</label>
+                <Form.Input
+                  style={inputStyle}
+                  type="url"
+                  name="url"
+                  required
+                  placeholder="http://mysite.com"
+                  value={this.state.ticket.url}
+                  onChange={this.onChange}
+                />
+                <Button content="Submit" />
+                <Button
+                  type="button"
+                  onClick={this.showOptions}
+                  color="teal"
+                  icon
+                >
+                  <Icon name="cog" />
+                  Options
+                </Button>
+              </Form.Group>
 
-              {/*<input
-            style={inputStyle}
-            type="text"
-            name="width"
-            placeholder="Enter an image width"
-            value={this.state.screenshot.width}
-            onChange={this.onChange}
-          />
-          <input
-            style={inputStyle}
-            type="text"
-            name="height"
-            placeholder=" Enter an image height"
-            value={this.state.screenshot.height}
-            onChange={this.onChange}
-          /> */}
-              <Button content="Submit" />
+              {this.state.showOptions && (
+                <Form.Group inline>
+                  <label>Width:</label>
+                  <Form.Input
+                    style={inputStyle}
+                    type="text"
+                    name="width"
+                    placeholder="Enter an image width"
+                    onChange={this.onChange}
+                  />
+                </Form.Group>
+              )}
+              {this.state.showOptions && (
+                <Form.Group inline>
+                  <label>Height:</label>
+                  <Form.Input
+                    style={inputStyle}
+                    type="text"
+                    name="height"
+                    placeholder=" Enter an image height"
+                    onChange={this.onChange}
+                  />
+                </Form.Group>
+              )}
             </Form>
           </>
         )}
