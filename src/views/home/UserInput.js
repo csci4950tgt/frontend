@@ -76,14 +76,36 @@ export default class UserInput extends Component {
     e.preventDefault();
     this.setState(prevState => {
       let ticket = { ...prevState.ticket };
-      ticket.screenshots = ticket.screenshots.filter((t, index) => i !== index);
+      ticket.screenshots = ticket.screenshots.filter((s, index) => i !== index);
       return { ticket };
     });
   };
 
+  cleanScreenshots = ticket => {
+    const isValidScreenshot = s => {
+      return typeof s.height === 'number' && typeof s.width === 'number';
+    };
+
+    let newTicket = { ...ticket };
+    // filter out screenshots with no width or height
+    newTicket.screenshots = newTicket.screenshots.filter(s =>
+      isValidScreenshot(s)
+    );
+
+    return newTicket;
+  };
+
+  cleanTicket = () => {
+    let ticket = { ...this.state.ticket };
+    // clean screenshots
+    ticket = this.cleanScreenshots(ticket);
+    return ticket;
+  };
+
   onFormSubmit = async e => {
     e.preventDefault();
-    const body = JSON.stringify(this.state.ticket);
+    const cleanTicket = this.cleanTicket();
+    const body = JSON.stringify(cleanTicket);
     const res = await createTicket(body);
     if (!res) {
       console.error('Error creating ticket!!');
@@ -155,8 +177,8 @@ export default class UserInput extends Component {
                     <Grid.Column width={3}>
                       <></>
                     </Grid.Column>
-                    <Grid.Column width={1}>
-                      <Button icon onClick={this.addScreenshot}>
+                    <Grid.Column width={2}>
+                      <Button icon onClick={this.addScreenshot} primary>
                         <Icon name="plus circle" />
                       </Button>
                     </Grid.Column>
@@ -202,7 +224,7 @@ const CustomScreenshotInput = ({ s, onChange, onClick, i }) => {
         </Grid.Column>
         <Grid.Column width={1}>
           {i > 0 && (
-            <Button icon onClick={e => onClick(e, i)}>
+            <Button icon onClick={e => onClick(e, i)} color="red">
               <Icon name="minus circle" />
             </Button>
           )}
