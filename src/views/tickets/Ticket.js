@@ -4,6 +4,7 @@ import { Loader, Placeholder, Segment, Divider } from 'semantic-ui-react';
 import Screenshot from './Screenshot';
 import JSViewer from './JSViewer';
 import { getTicket } from '../../utils/api.js';
+import TicketNotFound from './TicketNotFound';
 
 const REFRESH_EVERY_MS = 1000;
 
@@ -18,6 +19,7 @@ export default class Ticket extends Component {
         width: props.match.params.width,
       },
       currentCode: '',
+      hasError: '',
     };
 
     this.refreshInterval = setInterval(
@@ -50,7 +52,7 @@ export default class Ticket extends Component {
         this.stopAutomaticRefreshing();
       }
     } catch (error) {
-      // todo: display the error on the page
+      this.setState({ hasError: error.message });
     }
   };
 
@@ -58,10 +60,22 @@ export default class Ticket extends Component {
     this.setState({ currentCode: data.value });
   };
 
+  static getDerivedStateFromError = error => {
+    this.setState({ hasError: error.message });
+  };
+
   render() {
     const { ticketInfo } = this.state;
-    return (
-      <>
+    if (this.state.hasError !== '') {
+      return (
+        <TicketNotFound
+          ticketID={ticketInfo.ticketID}
+          errMessage={this.state.hasError}
+        />
+      );
+    } else {
+      return (
+        <>
         {!this.state.ticketInfo.processed && (
           <div>
             <Loader
@@ -101,6 +115,7 @@ export default class Ticket extends Component {
           </>
         )}
       </>
-    );
+      );
+    }
   }
 }
