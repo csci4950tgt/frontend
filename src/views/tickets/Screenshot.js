@@ -10,7 +10,6 @@ export default class Screenshot extends Component {
   async getTicket() {
     try {
       let value = await getTicket(this.props.ticketID);
-      debugger;
 
       this.setState({ height: value.ticket.screenshots[0].height });
       this.setState({ width: value.ticket.screenshots[0].width });

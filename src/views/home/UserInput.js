@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Button, Form, Header, Icon } from 'semantic-ui-react';
+import { Button, Form, Header, Icon, Grid } from 'semantic-ui-react';
 import { Redirect } from 'react-router-dom';
 import { createTicket } from '../../utils/api';
 
-const inputStyle = {
+const urlInputStyle = {
   display: 'block',
   flex: '10',
   padding: '5px',
@@ -16,9 +16,9 @@ export default class UserInput extends Component {
       url: '',
       screenshots: [
         {
-          height: 0,
-          width: 0,
-          filename: 'screenshot.png',
+          height: '',
+          width: '',
+          filename: 'screenshot0.png',
           userAgent: '',
         },
       ],
@@ -35,31 +35,82 @@ export default class UserInput extends Component {
     }
   };
   //for multiple on forms on a field
-  onChange = e => {
-    if (e.target.name === 'width' || e.target.name === 'height') {
-      var screenshotProp = this.state.ticket.screenshots[0];
+  onChangeURL = e => {
+    let ticket = { ...this.state.ticket };
+    ticket.url = e.target.value;
+    this.setState({ ticket });
+    // }
+  };
+
+  onChangeScreenshot = (e, i) => {
+    let screenshotProp = this.state.ticket.screenshots[i];
+    if (!isNaN(e.target.value)) {
       if (e.target.name === 'width') {
-        screenshotProp.width = parseInt(e.target.value);
+        screenshotProp.width = parseInt(e.target.value) || '';
       } else {
-        screenshotProp.height = parseInt(e.target.value);
+        screenshotProp.height = parseInt(e.target.value) || '';
       }
       this.setState({ screenshotProp });
-    } else {
-      var ticket = { ...this.state.ticket };
-      ticket.url = e.target.value;
-      this.setState({ ticket });
     }
+  };
+
+  addScreenshot = e => {
+    e.preventDefault();
+    this.setState(prevState => {
+      let ticket = { ...prevState.ticket };
+      const len = ticket.screenshots.length;
+      ticket.screenshots = [
+        ...ticket.screenshots,
+        {
+          height: '',
+          width: '',
+          filename: `screenshot${len}.png`,
+          userAgent: '',
+        },
+      ];
+      return { ticket };
+    });
+  };
+
+  removeScreenshot = (e, i) => {
+    e.preventDefault();
+    this.setState(prevState => {
+      let ticket = { ...prevState.ticket };
+      ticket.screenshots = ticket.screenshots.filter((s, index) => i !== index);
+      return { ticket };
+    });
+  };
+
+  cleanScreenshots = ticket => {
+    const isValidScreenshot = s => {
+      return typeof s.height === 'number' && typeof s.width === 'number';
+    };
+
+    let newTicket = { ...ticket };
+    // filter out screenshots with no width or height
+    newTicket.screenshots = newTicket.screenshots.filter(isValidScreenshot);
+
+    return newTicket;
+  };
+
+  cleanTicket = () => {
+    let ticket = { ...this.state.ticket };
+    // clean screenshots
+    ticket = this.cleanScreenshots(ticket);
+    return ticket;
   };
 
   onFormSubmit = async e => {
     e.preventDefault();
-    const body = JSON.stringify(this.state.ticket);
+    const cleanTicket = this.cleanTicket();
+    const body = JSON.stringify(cleanTicket);
     const res = await createTicket(body);
     if (!res) {
       console.error('Error creating ticket!!');
       // TODO: let user know about error
     } else {
-      console.log(res);
+      console.log(body);
+      console.log(res.ticket);
       this.setState({ newTicket: res.ticket });
     }
   };
@@ -75,18 +126,25 @@ export default class UserInput extends Component {
             <Header as="h3"> Enter Parameters:</Header>
             <Form
               onSubmit={this.onFormSubmit}
-              style={{ display: 'inline-block' }}
+              style={{
+                display: 'inline-block',
+                textAlign: 'center',
+                width: '1000px',
+              }}
             >
-              <Form.Group inline>
+              <Form.Group
+                inline
+                style={{ justifyContent: 'center', paddingBottom: '10px' }}
+              >
                 <label style={{ padding: '10px' }}>Url:</label>
                 <Form.Input
-                  style={inputStyle}
+                  style={urlInputStyle}
                   type="url"
                   name="url"
                   required
                   placeholder="http://mysite.com"
                   value={this.state.ticket.url}
-                  onChange={this.onChange}
+                  onChange={this.onChangeURL}
                 />
                 <Button content="Submit" />
                 <Button
@@ -101,28 +159,29 @@ export default class UserInput extends Component {
               </Form.Group>
 
               {this.state.showOptions && (
-                <Form.Group inline>
-                  <label>Width:</label>
-                  <Form.Input
-                    style={inputStyle}
-                    type="text"
-                    name="width"
-                    placeholder="Enter an image width"
-                    onChange={this.onChange}
-                  />
-                </Form.Group>
-              )}
-              {this.state.showOptions && (
-                <Form.Group inline>
-                  <label>Height:</label>
-                  <Form.Input
-                    style={inputStyle}
-                    type="text"
-                    name="height"
-                    placeholder=" Enter an image height"
-                    onChange={this.onChange}
-                  />
-                </Form.Group>
+                <Grid>
+                  {this.state.ticket.screenshots.map((screenshot, i) => {
+                    return (
+                      <CustomScreenshotInput
+                        s={screenshot}
+                        onChange={this.onChangeScreenshot}
+                        onClick={this.removeScreenshot}
+                        key={i}
+                        i={i}
+                      />
+                    );
+                  })}
+                  <Grid.Row>
+                    <Grid.Column width={3}>
+                      <></>
+                    </Grid.Column>
+                    <Grid.Column width={2}>
+                      <Button icon onClick={this.addScreenshot} primary>
+                        <Icon name="plus circle" />
+                      </Button>
+                    </Grid.Column>
+                  </Grid.Row>
+                </Grid>
               )}
             </Form>
           </>
@@ -131,3 +190,44 @@ export default class UserInput extends Component {
     );
   }
 }
+
+const CustomScreenshotInput = ({ s, onChange, onClick, i }) => {
+  return (
+    <>
+      <Grid.Row style={{ justifyContent: 'center', padding: 0 }}>
+        <Grid.Column width={4}>
+          <Form.Group inline>
+            <label>Width:</label>
+            <Form.Input
+              type="text"
+              name="width"
+              placeholder="Enter an image width"
+              onChange={e => onChange(e, i)}
+              value={s.width}
+            />
+          </Form.Group>
+        </Grid.Column>
+
+        <Grid.Column width={4}>
+          <Form.Group inline>
+            <label>Height:</label>
+            <Form.Input
+              type="text"
+              name="height"
+              placeholder=" Enter an image height"
+              onChange={e => onChange(e, i)}
+              value={s.height}
+            />
+          </Form.Group>
+        </Grid.Column>
+        <Grid.Column width={1}>
+          {i > 0 && (
+            <Button icon onClick={e => onClick(e, i)} color="red">
+              <Icon name="minus circle" />
+            </Button>
+          )}
+        </Grid.Column>
+      </Grid.Row>
+    </>
+  );
+};
