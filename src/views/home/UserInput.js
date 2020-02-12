@@ -88,9 +88,7 @@ export default class UserInput extends Component {
 
     let newTicket = { ...ticket };
     // filter out screenshots with no width or height
-    newTicket.screenshots = newTicket.screenshots.filter(s =>
-      isValidScreenshot(s)
-    );
+    newTicket.screenshots = newTicket.screenshots.filter(isValidScreenshot);
 
     return newTicket;
   };
