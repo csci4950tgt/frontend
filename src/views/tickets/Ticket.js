@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { Loader, Placeholder, Segment, Divider } from 'semantic-ui-react';
+import {
+  Loader,
+  Placeholder,
+  Segment,
+  Divider,
+  Container,
+} from 'semantic-ui-react';
 
 import Screenshot from './Screenshot';
 import JSViewer from './JSViewer';
@@ -76,45 +82,42 @@ export default class Ticket extends Component {
     } else {
       return (
         <>
-        {!this.state.ticketInfo.processed && (
-          <div>
-            <Loader
-              active
-              inline
-              content="The ticket is being processed. Please wait."
-              style={{ marginBottom: '50px' }}
-            />
-            <Segment inverted>
-              <Placeholder fluid inverted>
-                <Placeholder.Image />
-                <Placeholder.Paragraph>
-                  <Placeholder.Line />
-                  <Placeholder.Line />
-                  <Placeholder.Line />
-                  <Placeholder.Line />
-                  <Placeholder.Line />
-                  <Placeholder.Line />
-                </Placeholder.Paragraph>
-              </Placeholder>
-            </Segment>
-          </div>
-        )}
-        {this.state.ticketInfo.processed && (
-          <>
-            <Screenshot
-              ticketID={ticketInfo.ticketID}
-              height={ticketInfo.height}
-              width={ticketInfo.width}
-            />
-            <Divider hidden />
-            <JSViewer
-              ticketID={ticketInfo.ticketID}
-              onFileSelectionChange={this.onFileSelectionChange}
-              code={this.state.currentCode}
-            />
-          </>
-        )}
-      </>
+          {!this.state.ticketInfo.processed && (
+            <div>
+              <Loader
+                active
+                inline
+                content="The ticket is being processed. Please wait."
+                style={{ marginBottom: '50px' }}
+              />
+              <Segment inverted>
+                <Placeholder fluid inverted>
+                  <Placeholder.Image />
+                  <Placeholder.Paragraph>
+                    <Placeholder.Line />
+                    <Placeholder.Line />
+                    <Placeholder.Line />
+                    <Placeholder.Line />
+                    <Placeholder.Line />
+                    <Placeholder.Line />
+                  </Placeholder.Paragraph>
+                </Placeholder>
+              </Segment>
+            </div>
+          )}
+          {this.state.ticketInfo.processed && (
+            <>
+              <Screenshot ticketID={ticketInfo.ticketID} />
+
+              <Divider hidden />
+              <JSViewer
+                ticketID={ticketInfo.ticketID}
+                onFileSelectionChange={this.onFileSelectionChange}
+                code={this.state.currentCode}
+              />
+            </>
+          )}
+        </>
       );
     }
   }
