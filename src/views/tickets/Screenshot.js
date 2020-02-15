@@ -36,12 +36,13 @@ export default class Screenshot extends Component {
 
     try {
       let ticket = await getTicket(this.props.ticketID);
-      const length =
-        this.state.carouselLength + ticket.ticket.screenshots.length;
-      if (length > 1) {
+      this.setState({
+        carouselLength:
+          this.state.carouselLength + ticket.ticket.screenshots.length,
+      });
+      if (this.state.carouselLength > 1) {
         this.setState({ singleScreenshot: false });
       }
-      this.setState({ carouselLength: length });
 
       for (let i in ticket.ticket.screenshots) {
         const filename = ticket.ticket.screenshots[i].filename;
