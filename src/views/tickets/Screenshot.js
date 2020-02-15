@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
-import { Image, Segment, Grid, Divider, Container } from 'semantic-ui-react';
+import {
+  Image,
+  Segment,
+  Divider,
+  Icon,
+  Button,
+  Modal,
+} from 'semantic-ui-react';
 import { getTicket, getArtifactURL } from '../../utils/api.js';
 
 import 'pure-react-carousel/dist/react-carousel.es.css';
@@ -12,7 +19,9 @@ export default class Screenshot extends Component {
     singleScreenshot: true,
   };
   carousel = [];
+
   async getTicket() {
+    // always get full page screenshot and add it to the carousel
     let image = (
       <Slide index={0} width="100%">
         <Image
@@ -24,7 +33,7 @@ export default class Screenshot extends Component {
       </Slide>
     );
     this.carousel.push(image);
-    debugger;
+
     try {
       let ticket = await getTicket(this.props.ticketID);
       const length =
@@ -33,9 +42,9 @@ export default class Screenshot extends Component {
         this.setState({ singleScreenshot: false });
       }
       this.setState({ carouselLength: length });
+
       for (let i in ticket.ticket.screenshots) {
         const filename = ticket.ticket.screenshots[i].filename;
-        //const screenshot = ticket.screenshots[i];
         let carouselImg = (
           <Slide index={i + 1} centered>
             <Image
@@ -52,7 +61,6 @@ export default class Screenshot extends Component {
     } catch (error) {
       // todo: tell user about error
     }
-    debugger;
   }
 
   componentDidMount() {
@@ -60,6 +68,9 @@ export default class Screenshot extends Component {
   }
 
   render() {
+    //Carasoul has option to play
+    //isPlaying="true"
+    //interval="3500"
     return (
       <div>
         {this.state.singleScreenshot ? (
@@ -68,6 +79,7 @@ export default class Screenshot extends Component {
             src={getArtifactURL(this.props.ticketID, 'screenshotFull.png')}
             bordered
             centered
+            fluid
           />
         ) : (
           <Segment maxwidth={100}>
@@ -77,8 +89,28 @@ export default class Screenshot extends Component {
               totalSlides={this.state.carouselLength}
             >
               <Slider>{this.carousel}</Slider>
-
               <Divider />
+              <Modal
+                trigger={
+                  <Button floated="right" icon>
+                    {' '}
+                    <Icon name="expand" />{' '}
+                  </Button>
+                }
+              >
+                <Modal.Content image>
+                  <Image
+                    alt="fullpage screenshot"
+                    src={getArtifactURL(
+                      this.props.ticketID,
+                      'screenshotFull.png'
+                    )}
+                    bordered
+                    centered
+                    fluid
+                  />
+                </Modal.Content>
+              </Modal>
               <CustomDotGroup slides={this.state.carouselLength} />
             </CarouselProvider>
           </Segment>

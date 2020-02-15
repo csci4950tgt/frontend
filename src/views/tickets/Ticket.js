@@ -1,11 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Loader,
-  Placeholder,
-  Segment,
-  Divider,
-  Container,
-} from 'semantic-ui-react';
+import { Loader, Placeholder, Segment, Divider } from 'semantic-ui-react';
 
 import Screenshot from './Screenshot';
 import JSViewer from './JSViewer';
@@ -108,7 +102,6 @@ export default class Ticket extends Component {
           {this.state.ticketInfo.processed && (
             <>
               <Screenshot ticketID={ticketInfo.ticketID} />
-
               <Divider hidden />
               <JSViewer
                 ticketID={ticketInfo.ticketID}
