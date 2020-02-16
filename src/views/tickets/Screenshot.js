@@ -16,7 +16,6 @@ import CustomDotGroup from '../../components/CustomDotGroup.js';
 export default class Screenshot extends Component {
   state = {
     carouselLength: 1,
-    singleScreenshot: true,
   };
   carousel = [];
 
@@ -40,9 +39,6 @@ export default class Screenshot extends Component {
         carouselLength:
           this.state.carouselLength + ticket.ticket.screenshots.length,
       });
-      if (this.state.carouselLength > 1) {
-        this.setState({ singleScreenshot: false });
-      }
 
       for (let i in ticket.ticket.screenshots) {
         const filename = ticket.ticket.screenshots[i].filename;
@@ -74,7 +70,7 @@ export default class Screenshot extends Component {
     //interval="3500"
     return (
       <div>
-        {this.state.singleScreenshot ? (
+        {this.state.carouselLength === 1 ? (
           <Image
             alt="fullpage screenshot"
             src={getArtifactURL(this.props.ticketID, 'screenshotFull.png')}
