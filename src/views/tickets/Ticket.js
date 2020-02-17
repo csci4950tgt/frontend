@@ -44,10 +44,32 @@ export default class Ticket extends Component {
     try {
       const ticket = await getTicket(ticketId);
       const { processed } = ticket.ticket;
-
+      console.log(ticket.ticket);
+      console.log(ticket.ticket.malwareMatches);
+      var dummy = [
+        {
+          threatType: 'MALWARE',
+          platformType: 'WINDOWS',
+          threat: {
+            url: 'https://testsafebrowsing.appspot.com/s/malware.html',
+          },
+          cacheDuration: '300s',
+          threatEntryType: 'URL',
+        },
+        {
+          threatType: 'MALWARE',
+          platformType: 'WINDOWS',
+          threat: {
+            url: 'https://testsafebrowsing.appspot.com/s/malware.html',
+          },
+          cacheDuration: '300s',
+          threatEntryType: 'URL',
+        },
+      ];
+      // console.log(dummy);
       this.setState({
         ticketInfo: { ...this.state.ticketInfo, processed },
-        malwareMatches: JSON.parse(ticket.ticket.malwareMatches),
+        malwareMatches: dummy,
       });
 
       if (processed) {
