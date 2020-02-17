@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import { getTicket, getArtifactURL } from '../../utils/api.js';
-import { Icon, Header, Segment, List } from 'semantic-ui-react';
+import { Icon, Segment, List } from 'semantic-ui-react';
 
 export default class SafeBrowsing extends Component {
   constructor(props) {
     super(props);
-    var res,
-      segColor = 'white';
+    var segColor;
     this.getMatches();
   }
 
@@ -15,8 +13,6 @@ export default class SafeBrowsing extends Component {
       this.segColor = 'green';
     } else {
       this.segColor = 'red';
-
-      //TODO Dynamically create a list of detected threats depending on json string given to us
     }
   }
 
@@ -37,15 +33,12 @@ export default class SafeBrowsing extends Component {
           Google Safe Browsing
         </Segment>
         <Segment attached="bottom">
-          {!this.props.matches.length && (
-            <>
-              <h3>No threats Detected</h3>
-            </>
-          )}
-          {this.props.matches.length && (
+          {this.props.matches.length ? (
             <List divided>
               {this.props.matches.map(item => ThreatListItem(item))}
             </List>
+          ) : (
+            <h3>No threats Detected</h3>
           )}
         </Segment>
       </>

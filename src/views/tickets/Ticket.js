@@ -46,6 +46,8 @@ export default class Ticket extends Component {
       const { processed } = ticket.ticket;
       console.log(ticket.ticket);
       console.log(ticket.ticket.malwareMatches);
+
+      // TODO Get malwareMatches from api not dummy
       var dummy = [
         {
           threatType: 'MALWARE',
@@ -66,7 +68,6 @@ export default class Ticket extends Component {
           threatEntryType: 'URL',
         },
       ];
-      // console.log(dummy);
       this.setState({
         ticketInfo: { ...this.state.ticketInfo, processed },
         malwareMatches: dummy,
