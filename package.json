@@ -6,6 +6,7 @@
     "js-beautify": "^1.10.2",
     "moment": "^2.24.0",
     "perms": "^0.1.0",
+    "pure-react-carousel": "^1.25.2",
     "react": "^16.9.0",
     "react-ace": "^8.0.0",
     "react-dom": "^16.9.0",

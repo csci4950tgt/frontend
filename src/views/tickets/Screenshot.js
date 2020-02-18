@@ -1,18 +1,60 @@
 import React, { Component } from 'react';
-import { Image, Segment, Grid } from 'semantic-ui-react';
+import {
+  Image,
+  Segment,
+  Divider,
+  Icon,
+  Button,
+  Modal,
+} from 'semantic-ui-react';
 import { getTicket, getArtifactURL } from '../../utils/api.js';
+
+import 'pure-react-carousel/dist/react-carousel.es.css';
+import { CarouselProvider, Slide, Slider } from 'pure-react-carousel';
+import CustomDotGroup from '../../components/CustomDotGroup.js';
 
 export default class Screenshot extends Component {
   state = {
-    height: 0,
-    width: 0,
+    carouselLength: 1,
   };
-  async getTicket() {
-    try {
-      let value = await getTicket(this.props.ticketID);
+  carousel = [];
 
-      this.setState({ height: value.ticket.screenshots[0].height });
-      this.setState({ width: value.ticket.screenshots[0].width });
+  async getTicket() {
+    // always get full page screenshot and add it to the carousel
+    let image = (
+      <Slide index={0} width="100%">
+        <Image
+          alt="fullpage screenshot"
+          src={getArtifactURL(this.props.ticketID, 'screenshotFull.png')}
+          bordered
+          centered
+        />
+      </Slide>
+    );
+    this.carousel.push(image);
+
+    try {
+      let ticket = await getTicket(this.props.ticketID);
+      this.setState({
+        carouselLength:
+          this.state.carouselLength + ticket.ticket.screenshots.length,
+      });
+
+      for (let i in ticket.ticket.screenshots) {
+        const filename = ticket.ticket.screenshots[i].filename;
+        let carouselImg = (
+          <Slide index={i + 1} centered>
+            <Image
+              alt="fullpage screenshot"
+              src={getArtifactURL(this.props.ticketID, filename)}
+              bordered
+              centered
+            />
+          </Slide>
+        );
+
+        this.carousel.push(carouselImg);
+      }
     } catch (error) {
       // todo: tell user about error
     }
@@ -23,31 +65,54 @@ export default class Screenshot extends Component {
   }
 
   render() {
-    let image = (
-      <Image
-        alt="fullpage screenshot"
-        src={getArtifactURL(this.props.ticketID, 'screenshotFull.png')}
-        fluid
-        bordered
-      />
-    );
-    //if there is a heigth/width apply it else the image is fluid
-    if (this.state.height !== 0 && this.state.width !== 0) {
-      image = (
-        <Image
-          alt="fullpage screenshot"
-          src={getArtifactURL(this.props.ticketID, 'screenshotFull.png')}
-          heigth={this.state.height}
-          width={this.state.width}
-          centered
-          bordered
-        />
-      );
-    }
+    //Carasoul has option to play
+    //isPlaying="true"
+    //interval="3500"
     return (
-      <Grid columns={1} centered padded>
-        <Segment compact> {image}</Segment>
-      </Grid>
+      <div>
+        {this.state.carouselLength === 1 ? (
+          <Image
+            alt="fullpage screenshot"
+            src={getArtifactURL(this.props.ticketID, 'screenshotFull.png')}
+            bordered
+            centered
+            fluid
+          />
+        ) : (
+          <Segment maxwidth={100}>
+            <CarouselProvider
+              naturalSlideWidth={1}
+              naturalSlideHeight={0.5}
+              totalSlides={this.state.carouselLength}
+            >
+              <Slider>{this.carousel}</Slider>
+              <Divider />
+              <Modal
+                trigger={
+                  <Button floated="right" icon>
+                    {' '}
+                    <Icon name="expand" />{' '}
+                  </Button>
+                }
+              >
+                <Modal.Content image>
+                  <Image
+                    alt="fullpage screenshot"
+                    src={getArtifactURL(
+                      this.props.ticketID,
+                      'screenshotFull.png'
+                    )}
+                    bordered
+                    centered
+                    fluid
+                  />
+                </Modal.Content>
+              </Modal>
+              <CustomDotGroup slides={this.state.carouselLength} />
+            </CarouselProvider>
+          </Segment>
+        )}
+      </div>
     );
   }
 }
