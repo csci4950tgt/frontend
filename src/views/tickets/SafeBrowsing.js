@@ -4,12 +4,13 @@ import { Icon, Segment, List } from 'semantic-ui-react';
 export default class SafeBrowsing extends Component {
   constructor(props) {
     super(props);
-    var segColor;
+    console.log(this.props.matches);
+    this.matches = JSON.parse(this.props.matches);
     this.getMatches();
   }
 
   getMatches() {
-    if (!this.props.matches.length) {
+    if (!this.matches.length) {
       this.segColor = 'green';
     } else {
       this.segColor = 'red';
@@ -33,9 +34,9 @@ export default class SafeBrowsing extends Component {
           Google Safe Browsing
         </Segment>
         <Segment attached="bottom">
-          {this.props.matches.length ? (
+          {this.matches.length ? (
             <List divided>
-              {this.props.matches.map(item => ThreatListItem(item))}
+              {this.matches.map(item => ThreatListItem(item))}
             </List>
           ) : (
             <h3>No threats Detected</h3>

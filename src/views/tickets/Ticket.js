@@ -18,7 +18,7 @@ export default class Ticket extends Component {
         processed: false,
       },
       currentCode: '',
-      malwareMatches: {},
+      malwareMatches: '[]',
     };
 
     this.refreshInterval = setInterval(
@@ -45,32 +45,10 @@ export default class Ticket extends Component {
       const ticket = await getTicket(ticketId);
       const { processed } = ticket.ticket;
       console.log(ticket.ticket);
-      console.log(ticket.ticket.malwareMatches);
 
-      // TODO Get malwareMatches from api not dummy
-      var dummy = [
-        {
-          threatType: 'MALWARE',
-          platformType: 'WINDOWS',
-          threat: {
-            url: 'https://testsafebrowsing.appspot.com/s/malware.html',
-          },
-          cacheDuration: '300s',
-          threatEntryType: 'URL',
-        },
-        {
-          threatType: 'MALWARE',
-          platformType: 'WINDOWS',
-          threat: {
-            url: 'https://testsafebrowsing.appspot.com/s/malware.html',
-          },
-          cacheDuration: '300s',
-          threatEntryType: 'URL',
-        },
-      ];
       this.setState({
         ticketInfo: { ...this.state.ticketInfo, processed },
-        malwareMatches: dummy,
+        malwareMatches: ticket.ticket.malwareMatches,
       });
 
       if (processed) {
