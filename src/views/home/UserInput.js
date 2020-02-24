@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { Button, Form, Header, Icon, Grid } from 'semantic-ui-react';
+import {
+  Button,
+  Form,
+  Header,
+  Icon,
+  Grid,
+  Dropdown,
+  Input,
+} from 'semantic-ui-react';
 import { Redirect } from 'react-router-dom';
 import { createTicket } from '../../utils/api';
 
@@ -9,6 +17,39 @@ const urlInputStyle = {
   padding: '5px',
   margin: '10px',
 };
+
+const userAgentOptions = [
+  {
+    key: 'Chrome 70.0.3538.77',
+    text:
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36',
+    name:
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36',
+    value:
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36',
+  },
+  {
+    key: 'Chrome 44.0.2403.155',
+    text:
+      'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/44.0.2403.155 Safari/537.36',
+    value:
+      'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/44.0.2403.155 Safari/537.36',
+  },
+  {
+    key: 'Chrome 41.0.2227.1',
+    text:
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36',
+    value:
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36',
+  },
+  {
+    key: 'Chrome 41.0.2227.0',
+    text:
+      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36',
+    value:
+      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36',
+  },
+];
 
 export default class UserInput extends Component {
   state = {
@@ -42,7 +83,7 @@ export default class UserInput extends Component {
     // }
   };
 
-  onChangeScreenshot = (e, i) => {
+  onChangeScreenshot = (e, { value }, i) => {
     let screenshotProp = this.state.ticket.screenshots[i];
     if (!isNaN(e.target.value)) {
       if (e.target.name === 'width') {
@@ -51,6 +92,10 @@ export default class UserInput extends Component {
         screenshotProp.height = parseInt(e.target.value) || '';
       }
       this.setState({ screenshotProp });
+    } else if (value != null) {
+      screenshotProp.userAgent = value || '';
+      this.setState({ screenshotProp });
+      debugger;
     }
   };
 
@@ -112,6 +157,7 @@ export default class UserInput extends Component {
       console.log(body);
       console.log(res.ticket);
       this.setState({ newTicket: res.ticket });
+      debugger;
     }
   };
 
@@ -146,6 +192,7 @@ export default class UserInput extends Component {
                   value={this.state.ticket.url}
                   onChange={this.onChangeURL}
                 />
+
                 <Button content="Submit" />
                 <Button
                   type="button"
@@ -202,7 +249,7 @@ const CustomScreenshotInput = ({ s, onChange, onClick, i }) => {
               type="text"
               name="width"
               placeholder="Enter an image width"
-              onChange={e => onChange(e, i)}
+              onChange={(e, { value }) => onChange(e, { value }, i)}
               value={s.width}
             />
           </Form.Group>
@@ -215,7 +262,7 @@ const CustomScreenshotInput = ({ s, onChange, onClick, i }) => {
               type="text"
               name="height"
               placeholder=" Enter an image height"
-              onChange={e => onChange(e, i)}
+              onChange={(e, { value }) => onChange(e, { value }, i)}
               value={s.height}
             />
           </Form.Group>
@@ -226,6 +273,26 @@ const CustomScreenshotInput = ({ s, onChange, onClick, i }) => {
               <Icon name="minus circle" />
             </Button>
           )}
+        </Grid.Column>
+      </Grid.Row>
+      <Grid.Row columns={1} style={{ justifyContent: 'center' }}>
+        <Grid.Column width={8}>
+          <Input
+            label="User Agent:"
+            fluid
+            input={
+              <Dropdown
+                selection
+                fluid
+                placeholder="Default"
+                options={userAgentOptions}
+                onChange={(e, { value }) => onChange(e, { value }, i)}
+                style={{
+                  borderRadius: '0 4px 4px 0',
+                }}
+              />
+            }
+          />
         </Grid.Column>
       </Grid.Row>
     </>
