@@ -10,6 +10,15 @@ import {
 } from 'semantic-ui-react';
 import { Redirect } from 'react-router-dom';
 import { createTicket } from '../../utils/api';
+import { userAgentOptions } from '../../views/home/devices';
+
+const userAgentPhones = userAgentOptions.phones;
+const userAgentTablets = userAgentOptions.phones;
+
+// re write devices to have key, text and value
+// implement catagories on dropdown
+// ability to add multiple devices
+// OR add custome User agent input and height and width
 
 const urlInputStyle = {
   display: 'block',
@@ -17,39 +26,6 @@ const urlInputStyle = {
   padding: '5px',
   margin: '10px',
 };
-
-const userAgentOptions = [
-  {
-    key: 'Chrome 70.0.3538.77',
-    text:
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36',
-    name:
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36',
-    value:
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36',
-  },
-  {
-    key: 'Chrome 44.0.2403.155',
-    text:
-      'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/44.0.2403.155 Safari/537.36',
-    value:
-      'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/44.0.2403.155 Safari/537.36',
-  },
-  {
-    key: 'Chrome 41.0.2227.1',
-    text:
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36',
-    value:
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36',
-  },
-  {
-    key: 'Chrome 41.0.2227.0',
-    text:
-      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36',
-    value:
-      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36',
-  },
-];
 
 export default class UserInput extends Component {
   state = {
@@ -66,6 +42,7 @@ export default class UserInput extends Component {
     },
     newTicket: null,
     showOptions: false,
+    userAgentSelection: '',
   };
 
   showOptions = e => {
@@ -83,20 +60,26 @@ export default class UserInput extends Component {
     // }
   };
 
-  onChangeScreenshot = (e, { value }, i) => {
+  onChangeScreenshot = (e, i, item) => {
+    //item is the chosen device form the dropdown menu
     let screenshotProp = this.state.ticket.screenshots[i];
+    if (item != null) {
+      this.setState({ userAgentSelection: item.text });
+      screenshotProp.userAgent = item.userAgent || '';
+      screenshotProp.width = parseInt(item.width) || '';
+      screenshotProp.height = parseInt(item.height) || '';
+    }
+
     if (!isNaN(e.target.value)) {
       if (e.target.name === 'width') {
         screenshotProp.width = parseInt(e.target.value) || '';
-      } else {
+      } else if (e.target.name === 'height') {
         screenshotProp.height = parseInt(e.target.value) || '';
+      } else if (e.target.name === 'userAgent') {
+        screenshotProp.userAgent = parseInt(e.target.value) || '';
       }
-      this.setState({ screenshotProp });
-    } else if (value != null) {
-      screenshotProp.userAgent = value || '';
-      this.setState({ screenshotProp });
-      debugger;
     }
+    this.setState({ screenshotProp });
   };
 
   addScreenshot = e => {
@@ -157,7 +140,6 @@ export default class UserInput extends Component {
       console.log(body);
       console.log(res.ticket);
       this.setState({ newTicket: res.ticket });
-      debugger;
     }
   };
 
@@ -215,6 +197,7 @@ export default class UserInput extends Component {
                         onClick={this.removeScreenshot}
                         key={i}
                         i={i}
+                        state={this.state}
                       />
                     );
                   })}
@@ -238,9 +221,52 @@ export default class UserInput extends Component {
   }
 }
 
-const CustomScreenshotInput = ({ s, onChange, onClick, i }) => {
+const CustomScreenshotInput = ({ s, onChange, onClick, i, state }) => {
   return (
     <>
+      <Grid.Row columns={1} style={{ justifyContent: 'center' }}>
+        <Grid.Column width={8}>
+          <Input
+            label="User Agent:"
+            fluid
+            input={
+              <Dropdown
+                text={state.userAgentSelection}
+                fluid
+                selection
+                style={{
+                  borderRadius: '0 4px 4px 0',
+                }}
+              >
+                <Dropdown.Menu>
+                  <Dropdown.Header>Phones</Dropdown.Header>
+                  {userAgentPhones.map((item, index) => {
+                    return (
+                      <Dropdown.Item
+                        key={index}
+                        text={item.name}
+                        value={item.name}
+                        onClick={e => onChange(e, i, item)}
+                      />
+                    );
+                  })}
+                  <Dropdown.Header>Tablets</Dropdown.Header>
+                  {userAgentTablets.map((item, index) => {
+                    return (
+                      <Dropdown.Item
+                        key={index}
+                        text={item.name}
+                        value={item.name}
+                        onClick={e => onChange(e, i, item)}
+                      />
+                    );
+                  })}
+                </Dropdown.Menu>
+              </Dropdown>
+            }
+          />
+        </Grid.Column>
+      </Grid.Row>
       <Grid.Row style={{ justifyContent: 'center', padding: 0 }}>
         <Grid.Column width={4}>
           <Form.Group inline>
@@ -249,7 +275,7 @@ const CustomScreenshotInput = ({ s, onChange, onClick, i }) => {
               type="text"
               name="width"
               placeholder="Enter an image width"
-              onChange={(e, { value }) => onChange(e, { value }, i)}
+              onChange={e => onChange(e, i)}
               value={s.width}
             />
           </Form.Group>
@@ -262,8 +288,20 @@ const CustomScreenshotInput = ({ s, onChange, onClick, i }) => {
               type="text"
               name="height"
               placeholder=" Enter an image height"
-              onChange={(e, { value }) => onChange(e, { value }, i)}
+              onChange={e => onChange(e, i)}
               value={s.height}
+            />
+          </Form.Group>
+        </Grid.Column>
+        <Grid.Column width={4}>
+          <Form.Group inline>
+            <label>User Agent:</label>
+            <Form.Input
+              type="text"
+              name="userAgent"
+              placeholder="Enter an custom user agent"
+              onChange={e => onChange(e, i)}
+              value={s.userAgent}
             />
           </Form.Group>
         </Grid.Column>
@@ -273,26 +311,6 @@ const CustomScreenshotInput = ({ s, onChange, onClick, i }) => {
               <Icon name="minus circle" />
             </Button>
           )}
-        </Grid.Column>
-      </Grid.Row>
-      <Grid.Row columns={1} style={{ justifyContent: 'center' }}>
-        <Grid.Column width={8}>
-          <Input
-            label="User Agent:"
-            fluid
-            input={
-              <Dropdown
-                selection
-                fluid
-                placeholder="Default"
-                options={userAgentOptions}
-                onChange={(e, { value }) => onChange(e, { value }, i)}
-                style={{
-                  borderRadius: '0 4px 4px 0',
-                }}
-              />
-            }
-          />
         </Grid.Column>
       </Grid.Row>
     </>

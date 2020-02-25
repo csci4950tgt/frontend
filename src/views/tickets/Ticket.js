@@ -50,7 +50,6 @@ export default class Ticket extends Component {
 
       if (processed) {
         this.stopAutomaticRefreshing();
-        debugger;
       }
     } catch (error) {
       this.setState({ hasError: error.message });
