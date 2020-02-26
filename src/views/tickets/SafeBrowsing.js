@@ -1,13 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Icon,
-  Segment,
-  List,
-  Divider,
-  Grid,
-  Label,
-  Message,
-} from 'semantic-ui-react';
+import { Icon, Segment, List, Label } from 'semantic-ui-react';
 
 export default class SafeBrowsing extends Component {
   constructor(props) {
@@ -50,6 +42,7 @@ export default class SafeBrowsing extends Component {
         symbol = 'chrome';
         break;
       case 'PLATFORM_TYPE_UNSPECIFIED':
+      default:
         symbol = 'question circle';
     }
     return symbol;
@@ -70,6 +63,8 @@ export default class SafeBrowsing extends Component {
       case 'POTENTIALLY_HARMFUL_APPLICATION':
         icon = 'shield alternate';
         break;
+      default:
+        icon = 'question circle';
     }
     return icon;
   };
