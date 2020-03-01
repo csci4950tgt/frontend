@@ -12,13 +12,7 @@ import { Redirect } from 'react-router-dom';
 import { createTicket } from '../../utils/api';
 import { userAgentOptions } from '../../views/home/devices';
 
-const userAgentPhones = userAgentOptions.phones;
-const userAgentTablets = userAgentOptions.phones;
-
-// re write devices to have key, text and value
-// implement catagories on dropdown
-// ability to add multiple devices
-// OR add custome User agent input and height and width
+const userAgents = userAgentOptions.devices;
 
 const urlInputStyle = {
   display: 'block',
@@ -42,7 +36,7 @@ export default class UserInput extends Component {
     },
     newTicket: null,
     showOptions: false,
-    userAgentSelection: '',
+    userAgentSelection: [''],
   };
 
   showOptions = e => {
@@ -57,17 +51,19 @@ export default class UserInput extends Component {
     let ticket = { ...this.state.ticket };
     ticket.url = e.target.value;
     this.setState({ ticket });
-    // }
   };
 
-  onChangeScreenshot = (e, i, item) => {
-    //item is the chosen device form the dropdown menu
+  onChangeScreenshot = (e, i, selection) => {
     let screenshotProp = this.state.ticket.screenshots[i];
-    if (item != null) {
-      this.setState({ userAgentSelection: item.text });
-      screenshotProp.userAgent = item.userAgent || '';
-      screenshotProp.width = parseInt(item.width) || '';
-      screenshotProp.height = parseInt(item.height) || '';
+    if (selection != null) {
+      //get the json object index of the select user agent
+      var index = userAgents.findIndex(function(item, i) {
+        return item.name === selection.value;
+      });
+      let device = userAgents[index];
+      screenshotProp.userAgent = device.userAgent || '';
+      screenshotProp.width = parseInt(device.width) || '';
+      screenshotProp.height = parseInt(device.height) || '';
     }
 
     if (!isNaN(e.target.value)) {
@@ -75,9 +71,11 @@ export default class UserInput extends Component {
         screenshotProp.width = parseInt(e.target.value) || '';
       } else if (e.target.name === 'height') {
         screenshotProp.height = parseInt(e.target.value) || '';
-      } else if (e.target.name === 'userAgent') {
-        screenshotProp.userAgent = parseInt(e.target.value) || '';
       }
+    }
+    // for custom user agents
+    if (e.target.value != null && e.target.name === 'userAgent') {
+      screenshotProp.userAgent = e.target.value || '';
     }
     this.setState({ screenshotProp });
   };
@@ -231,43 +229,21 @@ const CustomScreenshotInput = ({ s, onChange, onClick, i, state }) => {
             fluid
             input={
               <Dropdown
-                text={state.userAgentSelection}
-                fluid
                 selection
+                fluid
+                placeholder="Default"
+                options={userAgents}
+                onChange={(e, selection) => onChange(e, i, selection)}
                 style={{
                   borderRadius: '0 4px 4px 0',
                 }}
-              >
-                <Dropdown.Menu>
-                  <Dropdown.Header>Phones</Dropdown.Header>
-                  {userAgentPhones.map((item, index) => {
-                    return (
-                      <Dropdown.Item
-                        key={index}
-                        text={item.name}
-                        value={item.name}
-                        onClick={e => onChange(e, i, item)}
-                      />
-                    );
-                  })}
-                  <Dropdown.Header>Tablets</Dropdown.Header>
-                  {userAgentTablets.map((item, index) => {
-                    return (
-                      <Dropdown.Item
-                        key={index}
-                        text={item.name}
-                        value={item.name}
-                        onClick={e => onChange(e, i, item)}
-                      />
-                    );
-                  })}
-                </Dropdown.Menu>
-              </Dropdown>
+              />
             }
           />
         </Grid.Column>
       </Grid.Row>
-      <Grid.Row style={{ justifyContent: 'center', padding: 0 }}>
+
+      <Grid.Row columns={3} style={{ justifyContent: 'center', padding: 0 }}>
         <Grid.Column width={4}>
           <Form.Group inline>
             <label>Width:</label>

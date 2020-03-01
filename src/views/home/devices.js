@@ -17,8 +17,10 @@
 //
 // [1] https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/devtools/front_end/toolbox/OverridesUI.js
 
+//currently our website only displays phone and tablet options all in one array called devices
+
 export const userAgentOptions = {
-  phones: [
+  devices: [
     {
       name: 'Apple iPhone 3GS',
       text: 'Apple iPhone 3GS',
@@ -316,8 +318,6 @@ export const userAgentOptions = {
         'Mozilla/5.0 (Mobile; LG-D300; rv:28.0) Gecko/28.0 Firefox/28.0',
       touch: true,
     },
-  ],
-  tablets: [
     {
       name: 'Amazon Kindle Fire HDX 7″',
       text: 'Amazon Kindle Fire HDX 7″',
