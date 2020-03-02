@@ -43,7 +43,6 @@ export default class Screenshot extends Component {
     this.setState({ carousel: carouselTemp });
 
     try {
-      debugger;
       let ticket = await getTicket(this.props.ticketID);
       this.setState({
         carouselLength:
@@ -53,9 +52,9 @@ export default class Screenshot extends Component {
         const filename = ticket.ticket.screenshots[i].filename;
         const userAgent = ticket.ticket.screenshots[i].userAgent;
         //get the json object index of the user agent
-        var index = userAgents.findIndex(function(item, i) {
-          return item.userAgent === userAgent;
-        });
+        const index = userAgents.findIndex(
+          item => item.userAgent === userAgent
+        );
         let deviceName;
         if (index > -1) {
           deviceName = userAgents[index].name;

@@ -57,9 +57,7 @@ export default class UserInput extends Component {
     let screenshotProp = this.state.ticket.screenshots[i];
     if (selection != null) {
       //get the json object index of the select user agent
-      var index = userAgents.findIndex(function(item, i) {
-        return item.name === selection.value;
-      });
+      const index = userAgents.findIndex(item => item.name === selection.value);
       let device = userAgents[index];
       screenshotProp.userAgent = device.userAgent || '';
       screenshotProp.width = parseInt(device.width) || '';
