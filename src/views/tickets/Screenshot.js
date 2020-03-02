@@ -7,17 +7,20 @@ import {
   Button,
   Modal,
 } from 'semantic-ui-react';
-import { getTicket, getArtifactURL } from '../../utils/api.js';
+import { getTicket, getArtifactURL, getArtifact } from '../../utils/api.js';
 
 import 'pure-react-carousel/dist/react-carousel.es.css';
 import { CarouselProvider, Slide, Slider } from 'pure-react-carousel';
 import CustomDotGroup from '../../components/CustomDotGroup.js';
+
+import TextComponent from '../../utils/TextComponent.js';
 
 export default class Screenshot extends Component {
   state = {
     carouselLength: 1,
   };
   carousel = [];
+  ocrText = [];
 
   async getTicket() {
     // always get full page screenshot and add it to the carousel
@@ -32,6 +35,11 @@ export default class Screenshot extends Component {
       </Slide>
     );
     this.carousel.push(image);
+    getArtifact(this.props.ticketID, 'recognize-screenshotFull.ocr').then(
+      res => {
+        this.ocrText.push(res);
+      }
+    );
 
     try {
       let ticket = await getTicket(this.props.ticketID);
@@ -54,6 +62,12 @@ export default class Screenshot extends Component {
         );
 
         this.carousel.push(carouselImg);
+        getArtifact(
+          this.props.ticketID,
+          'recognize-' + filename.slice(0, -4) + '.ocr'
+        ).then(res => {
+          this.ocrText.push(res);
+        });
       }
     } catch (error) {
       // todo: tell user about error
@@ -114,10 +128,7 @@ export default class Screenshot extends Component {
                   </Button>
                 }
               >
-                <Modal.Content text>
-                  test OCR Text <br />
-                  Mutiple lines
-                </Modal.Content>
+                <TextComponent ocrText={this.ocrText} />
               </Modal>
 
               <CustomDotGroup slides={this.state.carouselLength} />
