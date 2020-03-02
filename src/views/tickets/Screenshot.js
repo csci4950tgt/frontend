@@ -90,8 +90,7 @@ export default class Screenshot extends Component {
               <Modal
                 trigger={
                   <Button floated="right" icon>
-                    {' '}
-                    <Icon name="expand" />{' '}
+                    <Icon name="expand" />
                   </Button>
                 }
               >
@@ -108,6 +107,19 @@ export default class Screenshot extends Component {
                   />
                 </Modal.Content>
               </Modal>
+              <Modal
+                trigger={
+                  <Button floated="right" icon>
+                    <Icon name="font" />
+                  </Button>
+                }
+              >
+                <Modal.Content text>
+                  test OCR Text <br />
+                  Mutiple lines
+                </Modal.Content>
+              </Modal>
+
               <CustomDotGroup slides={this.state.carouselLength} />
             </CarouselProvider>
           </Segment>
