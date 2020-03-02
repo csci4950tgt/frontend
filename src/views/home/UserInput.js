@@ -223,13 +223,13 @@ const CustomScreenshotInput = ({ s, onChange, onClick, i, state }) => {
       <Grid.Row columns={1} style={{ justifyContent: 'center' }}>
         <Grid.Column width={8}>
           <Input
-            label="User Agent:"
+            label="Device:"
             fluid
             input={
               <Dropdown
                 selection
                 fluid
-                placeholder="Default"
+                placeholder="None"
                 options={userAgents}
                 onChange={(e, selection) => onChange(e, i, selection)}
                 style={{
@@ -242,49 +242,50 @@ const CustomScreenshotInput = ({ s, onChange, onClick, i, state }) => {
       </Grid.Row>
 
       <Grid.Row columns={3} style={{ justifyContent: 'center', padding: 0 }}>
-        <Grid.Column width={4}>
+        <Grid.Column width={3}>
           <Form.Group inline>
             <label>Width:</label>
             <Form.Input
               type="text"
               name="width"
-              placeholder="Enter an image width"
+              style={{ width: '110px' }}
+              placeholder="Custom width"
               onChange={e => onChange(e, i)}
               value={s.width}
             />
           </Form.Group>
         </Grid.Column>
 
-        <Grid.Column width={4}>
+        <Grid.Column width={3}>
           <Form.Group inline>
             <label>Height:</label>
             <Form.Input
               type="text"
               name="height"
-              placeholder=" Enter an image height"
+              style={{ width: '110px' }}
+              placeholder="Custom height"
               onChange={e => onChange(e, i)}
               value={s.height}
             />
           </Form.Group>
         </Grid.Column>
-        <Grid.Column width={4}>
+        <Grid.Column width={6}>
           <Form.Group inline>
             <label>User Agent:</label>
             <Form.Input
               type="text"
               name="userAgent"
-              placeholder="Enter an custom user agent"
+              style={{ width: '300px' }}
+              placeholder="Custom user agent"
               onChange={e => onChange(e, i)}
               value={s.userAgent}
             />
           </Form.Group>
         </Grid.Column>
         <Grid.Column width={1}>
-          {i > 0 && (
-            <Button icon onClick={e => onClick(e, i)} color="red">
-              <Icon name="minus circle" />
-            </Button>
-          )}
+          <Button icon onClick={e => onClick(e, i)} color="red">
+            <Icon name="minus circle" />
+          </Button>
         </Grid.Column>
       </Grid.Row>
     </>
