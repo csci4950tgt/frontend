@@ -1,7 +1,18 @@
 import React, { Component } from 'react';
-import { Button, Form, Header, Icon, Grid } from 'semantic-ui-react';
+import {
+  Button,
+  Form,
+  Header,
+  Icon,
+  Grid,
+  Dropdown,
+  Input,
+} from 'semantic-ui-react';
 import { Redirect } from 'react-router-dom';
 import { createTicket } from '../../utils/api';
+import { userAgentOptions } from '../../views/home/devices';
+
+const userAgents = userAgentOptions.devices;
 
 const urlInputStyle = {
   display: 'block',
@@ -25,6 +36,7 @@ export default class UserInput extends Component {
     },
     newTicket: null,
     showOptions: false,
+    userAgentSelection: [''],
   };
 
   showOptions = e => {
@@ -39,19 +51,31 @@ export default class UserInput extends Component {
     let ticket = { ...this.state.ticket };
     ticket.url = e.target.value;
     this.setState({ ticket });
-    // }
   };
 
-  onChangeScreenshot = (e, i) => {
+  onChangeScreenshot = (e, i, selection) => {
     let screenshotProp = this.state.ticket.screenshots[i];
+    if (selection != null) {
+      //get the json object index of the select user agent
+      const index = userAgents.findIndex(item => item.name === selection.value);
+      let device = userAgents[index];
+      screenshotProp.userAgent = device.userAgent || '';
+      screenshotProp.width = parseInt(device.width) || '';
+      screenshotProp.height = parseInt(device.height) || '';
+    }
+
     if (!isNaN(e.target.value)) {
       if (e.target.name === 'width') {
         screenshotProp.width = parseInt(e.target.value) || '';
-      } else {
+      } else if (e.target.name === 'height') {
         screenshotProp.height = parseInt(e.target.value) || '';
       }
-      this.setState({ screenshotProp });
     }
+    // for custom user agents
+    if (e.target.value != null && e.target.name === 'userAgent') {
+      screenshotProp.userAgent = e.target.value || '';
+    }
+    this.setState({ screenshotProp });
   };
 
   addScreenshot = e => {
@@ -146,6 +170,7 @@ export default class UserInput extends Component {
                   value={this.state.ticket.url}
                   onChange={this.onChangeURL}
                 />
+
                 <Button content="Submit" />
                 <Button
                   type="button"
@@ -168,6 +193,7 @@ export default class UserInput extends Component {
                         onClick={this.removeScreenshot}
                         key={i}
                         i={i}
+                        state={this.state}
                       />
                     );
                   })}
@@ -191,41 +217,75 @@ export default class UserInput extends Component {
   }
 }
 
-const CustomScreenshotInput = ({ s, onChange, onClick, i }) => {
+const CustomScreenshotInput = ({ s, onChange, onClick, i, state }) => {
   return (
     <>
-      <Grid.Row style={{ justifyContent: 'center', padding: 0 }}>
-        <Grid.Column width={4}>
+      <Grid.Row columns={1} style={{ justifyContent: 'center' }}>
+        <Grid.Column width={8}>
+          <Input
+            label="Device:"
+            fluid
+            input={
+              <Dropdown
+                selection
+                fluid
+                placeholder="None"
+                options={userAgents}
+                onChange={(e, selection) => onChange(e, i, selection)}
+                style={{
+                  borderRadius: '0 4px 4px 0',
+                }}
+              />
+            }
+          />
+        </Grid.Column>
+      </Grid.Row>
+
+      <Grid.Row columns={3} style={{ justifyContent: 'center', padding: 0 }}>
+        <Grid.Column width={3}>
           <Form.Group inline>
             <label>Width:</label>
             <Form.Input
               type="text"
               name="width"
-              placeholder="Enter an image width"
+              style={{ width: '110px' }}
+              placeholder="Custom width"
               onChange={e => onChange(e, i)}
               value={s.width}
             />
           </Form.Group>
         </Grid.Column>
 
-        <Grid.Column width={4}>
+        <Grid.Column width={3}>
           <Form.Group inline>
             <label>Height:</label>
             <Form.Input
               type="text"
               name="height"
-              placeholder=" Enter an image height"
+              style={{ width: '110px' }}
+              placeholder="Custom height"
               onChange={e => onChange(e, i)}
               value={s.height}
             />
           </Form.Group>
         </Grid.Column>
+        <Grid.Column width={6}>
+          <Form.Group inline>
+            <label>User Agent:</label>
+            <Form.Input
+              type="text"
+              name="userAgent"
+              style={{ width: '300px' }}
+              placeholder="Custom user agent"
+              onChange={e => onChange(e, i)}
+              value={s.userAgent}
+            />
+          </Form.Group>
+        </Grid.Column>
         <Grid.Column width={1}>
-          {i > 0 && (
-            <Button icon onClick={e => onClick(e, i)} color="red">
-              <Icon name="minus circle" />
-            </Button>
-          )}
+          <Button icon onClick={e => onClick(e, i)} color="red">
+            <Icon name="minus circle" />
+          </Button>
         </Grid.Column>
       </Grid.Row>
     </>
