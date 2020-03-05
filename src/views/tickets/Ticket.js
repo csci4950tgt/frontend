@@ -4,7 +4,9 @@ import { Loader, Placeholder, Segment, Divider } from 'semantic-ui-react';
 import Screenshot from './Screenshot';
 import JSViewer from './JSViewer';
 import { getTicket } from '../../utils/api.js';
+import SafeBrowsing from './SafeBrowsing';
 import TicketNotFound from './TicketNotFound';
+
 
 const REFRESH_EVERY_MS = 1000;
 
@@ -19,6 +21,7 @@ export default class Ticket extends Component {
         width: props.match.params.width,
       },
       currentCode: '',
+      malwareMatches: '[]',
       hasError: '',
     };
 
@@ -45,8 +48,12 @@ export default class Ticket extends Component {
     try {
       const ticket = await getTicket(ticketId);
       const { processed } = ticket.ticket;
+      console.log(ticket.ticket);
 
-      this.setState({ ticketInfo: { ...this.state.ticketInfo, processed } });
+      this.setState({
+        ticketInfo: { ...this.state.ticketInfo, processed },
+        malwareMatches: ticket.ticket.malwareMatches,
+      });
 
       if (processed) {
         this.stopAutomaticRefreshing();
@@ -108,6 +115,7 @@ export default class Ticket extends Component {
                 onFileSelectionChange={this.onFileSelectionChange}
                 code={this.state.currentCode}
               />
+            <SafeBrowsing matches={this.state.malwareMatches} />
             </>
           )}
         </>
