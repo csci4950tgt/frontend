@@ -6,13 +6,13 @@ import {
   Icon,
   Button,
   Modal,
+  Header,
 } from 'semantic-ui-react';
 import { getTicket, getArtifactURL, getArtifact } from '../../utils/api.js';
 
 import 'pure-react-carousel/dist/react-carousel.es.css';
 import { CarouselProvider, Slide, Slider } from 'pure-react-carousel';
 import CustomDotGroup from '../../components/CustomDotGroup.js';
-
 import TextComponent from '../../utils/TextComponent.js';
 import ImageComponent from '../../utils/ImageComponent.js';
 
@@ -31,12 +31,16 @@ export default class Screenshot extends Component {
       'screenshotFull.png'
     );
     let image = (
-      <Slide index={0} width="100%">
+      <Slide index={0}>
+        <Header as="h4" dividing>
+          Default
+        </Header>
         <Image
           alt="fullpage screenshot"
           src={fullscreenImageURL}
           bordered
           centered
+          fluid
         />
       </Slide>
     );
@@ -55,15 +59,17 @@ export default class Screenshot extends Component {
         carouselLength:
           this.state.carouselLength + ticket.ticket.screenshots.length,
       });
-
       for (let i in ticket.ticket.screenshots) {
         const filename = ticket.ticket.screenshots[i].filename;
         const imageURL = getArtifactURL(this.props.ticketID, filename);
         this.imageURLs.push(imageURL);
         let carouselImg = (
           <Slide index={i + 1} centered>
+            <Header as="h4" dividing>
+              {deviceName}
+            </Header>
             <Image
-              alt="fullpage screenshot"
+              alt="screenshot"
               src={getArtifactURL(this.props.ticketID, filename)}
               bordered
               centered
@@ -120,7 +126,6 @@ export default class Screenshot extends Component {
             >
               <TextComponent ocrText={this.ocrText} />
             </Modal>
-
             <CustomDotGroup slides={this.state.carouselLength} />
           </CarouselProvider>
         </Segment>
