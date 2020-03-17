@@ -65,9 +65,7 @@ export default class Screenshot extends Component {
         this.imageURLs.push(imageURL);
         let carouselImg = (
           <Slide index={i + 1} centered>
-            <Header as="h4" dividing>
-              {deviceName}
-            </Header>
+            <Header as="h4" dividing></Header>
             <Image
               alt="screenshot"
               src={getArtifactURL(this.props.ticketID, filename)}
