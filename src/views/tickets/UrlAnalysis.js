@@ -6,8 +6,8 @@ import SummaryBox from './SummaryBox';
 import Screenshot from './Screenshot';
 import JSViewer from './JSViewer';
 
-const UrlAnalysis = ({ ticket, onFileSelectionChange }) => {
-  const { ticketInfo, malwareMatches, currentCode } = ticket;
+const UrlAnalysis = ({ ticket }) => {
+  const { ticketInfo, malwareMatches } = ticket;
   const { ticketID, url } = ticketInfo;
   return (
     <div style={styles.root}>
@@ -25,8 +25,8 @@ const UrlAnalysis = ({ ticket, onFileSelectionChange }) => {
       <SectionTitle title="JavaScript" />
       <JSViewer
         ticketID={ticketID}
-        onFileSelectionChange={onFileSelectionChange}
-        code={currentCode}
+        // onFileSelectionChange={onFileSelectionChange}
+        // code={currentCode}
       />
     </div>
   );

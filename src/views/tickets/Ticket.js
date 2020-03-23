@@ -17,7 +17,6 @@ export default class Ticket extends Component {
         height: props.match.params.height,
         width: props.match.params.width,
       },
-      currentCode: '',
       malwareMatches: '[]',
       hasError: '',
     };
@@ -57,10 +56,6 @@ export default class Ticket extends Component {
     } catch (error) {
       this.setState({ hasError: error.message });
     }
-  };
-
-  onFileSelectionChange = (e, data) => {
-    this.setState({ currentCode: data.value });
   };
 
   static getDerivedStateFromError = error => {

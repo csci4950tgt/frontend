@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dropdown, Message } from 'semantic-ui-react';
+import { Dropdown, Message, Loader, Segment, Dimmer } from 'semantic-ui-react';
 import AceEditor from 'react-ace';
 import { getArtifact, getArtifactListing } from '../../utils/api';
 import { js as beautify } from 'js-beautify';
@@ -11,10 +11,10 @@ export default class CodeBlock extends Component {
     super(props);
     this.state = {
       filesBeingBlocked: false,
+      currentCode: '',
+      fileList: [],
     };
   }
-
-  fileList = [];
 
   async fetchArtifacts() {
     const ticketId = this.props.ticketID;
@@ -25,39 +25,53 @@ export default class CodeBlock extends Component {
         artifact.filename.endsWith('.js')
       );
 
+      const fileList = [];
+
+      // Loop through artifact filenames, fetch them, push into list
       for (let i in artifacts) {
         const name = artifacts[i].filename;
 
-        if (!this.fileList.find(i => i.key === name)) {
-          getArtifact(ticketId, name)
-            .then(res => {
-              this.fileList.push({
-                key: name,
-                text: <span className="text">{name}</span>,
-                value: beautify(res),
-              });
-            })
-            .catch(error => {
-              this.setState({ filesBeingBlocked: true });
-
-              this.fileList.push({
-                key: name,
+        try {
+          if (!fileList.find(i => i.key === name)) {
+            const res = await getArtifact(ticketId, name);
+            fileList.push({
+              key: i,
+              // text: <span className="text">{name}</span>,
+              text: name,
+              value: beautify(res),
+            });
+          }
+        } catch (error) {
+          this.setState({
+            filesBeingBlocked: true,
+            fileList: [
+              {
+                key: i,
                 text: (
                   <span className="text">
                     {name + ' (blocked by the adblocker)'}
                   </span>
                 ),
-                value: 'dummy value',
+                value:
+                  'It looks like this resource is blocked by your adblocker',
                 // if we don't put value and this disabled entry is the first one, it will be pre-selected and highlighted
                 // see https://github.com/Semantic-Org/Semantic-UI-React/issues/3130#issuecomment-530703465
                 disabled: true,
-              });
-              console.log(error);
-            });
+              },
+            ],
+          });
+          console.error(error.message);
         }
       }
+
+      // Successfully got js file artifacts, save in state
+      let currentCode;
+      if (fileList.length > 0) {
+        currentCode = fileList[0]['value'];
+      }
+      this.setState({ fileList, currentCode });
     } catch (error) {
-      // todo: tell user about error
+      // TODO: let user know about error getting artifact listing
     }
   }
 
@@ -65,13 +79,13 @@ export default class CodeBlock extends Component {
     this.fetchArtifacts();
   }
 
-  handleOnChange = (e, data) => {
-    this.props.onFileSelectionChange(e, data);
+  handleFileChange = (e, data) => {
+    this.setState({ currentCode: data.value });
   };
 
   render() {
     return (
-      <>
+      <div style={{ maxWidth: '500px', maxHeight: '700px' }}>
         {this.state.filesBeingBlocked && (
           <Message negative style={{ textAlign: 'left' }}>
             <Message.Header>
@@ -83,25 +97,36 @@ export default class CodeBlock extends Component {
             </p>
           </Message>
         )}
-        <Dropdown
-          placeholder="Select a File"
-          fluid
-          selection
-          options={this.fileList}
-          onChange={this.handleOnChange}
-        />
-        <AceEditor
-          mode="javascript"
-          theme="monokai"
-          readOnly={true}
-          width=""
-          height="800px"
-          value={this.props.code}
-          cursorStart={1}
-          wrapEnabled={true}
-          editorProps={{ $blockScrolling: true }}
-        />
-      </>
+        {this.state.fileList.length > 0 ? (
+          <>
+            <Dropdown
+              fluid
+              selection
+              options={this.state.fileList}
+              value={this.state.currentCode}
+              onChange={this.handleFileChange}
+            />
+            <AceEditor
+              mode="javascript"
+              theme="monokai"
+              readOnly={true}
+              // width="500px"
+              // height="700px"
+              width="100%"
+              value={this.state.currentCode}
+              cursorStart={1}
+              wrapEnabled={true}
+              editorProps={{ $blockScrolling: true }}
+            />
+          </>
+        ) : (
+          <Segment style={{ height: '100px' }}>
+            <Dimmer active inverted>
+              <Loader inverted />
+            </Dimmer>
+          </Segment>
+        )}
+      </div>
     );
   }
 }
