@@ -85,7 +85,7 @@ export default class CodeBlock extends Component {
 
   render() {
     return (
-      <div style={{ maxWidth: '500px', maxHeight: '700px' }}>
+      <>
         {this.state.filesBeingBlocked && (
           <Message negative style={{ textAlign: 'left' }}>
             <Message.Header>
@@ -120,13 +120,13 @@ export default class CodeBlock extends Component {
             />
           </>
         ) : (
-          <Segment style={{ height: '100px' }}>
-            <Dimmer active inverted>
-              <Loader inverted />
+          <Segment style={{ height: '500px' }}>
+            <Dimmer active>
+              <Loader />
             </Dimmer>
           </Segment>
         )}
-      </div>
+      </>
     );
   }
 }

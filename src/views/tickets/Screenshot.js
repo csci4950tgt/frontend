@@ -96,7 +96,7 @@ export default class Screenshot extends Component {
     //interval="3500"
     return (
       <div>
-        <Segment style={{ maxWidth: '500px' }}>
+        <Segment>
           <CarouselProvider
             naturalSlideWidth={1}
             naturalSlideHeight={0.5}

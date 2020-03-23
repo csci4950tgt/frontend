@@ -1,7 +1,7 @@
 import React from 'react';
-import { Header } from 'semantic-ui-react';
+import { Header, Grid } from 'semantic-ui-react';
 
-// Components
+// My Components
 import SummaryBox from './SummaryBox';
 import Screenshot from './Screenshot';
 import JSViewer from './JSViewer';
@@ -11,23 +11,29 @@ const UrlAnalysis = ({ ticket }) => {
   const { ticketID, url } = ticketInfo;
   return (
     <div style={styles.root}>
-      {/* URL Header */}
-      <Header as="h1" style={styles.urlHeader}>
-        {url}
-      </Header>
-      {/* Summary Box */}
-      <SectionTitle title="Summary" />
-      <SummaryBox malwareMatches={malwareMatches} />
-      {/* Screenshot & OCR */}
-      <SectionTitle title="Screenshot" />
-      <Screenshot ticketID={ticketID} />
-      {/* JavaScript */}
-      <SectionTitle title="JavaScript" />
-      <JSViewer
-        ticketID={ticketID}
-        // onFileSelectionChange={onFileSelectionChange}
-        // code={currentCode}
-      />
+      <Grid stackable columns={1}>
+        <Grid.Column>
+          {/* URL Header */}
+          <Header as="h1" style={styles.urlHeader}>
+            {url}
+          </Header>
+        </Grid.Column>
+      </Grid>
+      <Grid stackable columns={2}>
+        <Grid.Column>
+          {/* Summary Box */}
+          <SectionTitle title="Summary" />
+          <SummaryBox malwareMatches={malwareMatches} />
+          {/* Screenshot & OCR */}
+          <SectionTitle title="Screenshot" />
+          <Screenshot ticketID={ticketID} />
+        </Grid.Column>
+        <Grid.Column>
+          {/* JavaScript */}
+          <SectionTitle title="JavaScript" />
+          <JSViewer ticketID={ticketID} />
+        </Grid.Column>
+      </Grid>
     </div>
   );
 };
