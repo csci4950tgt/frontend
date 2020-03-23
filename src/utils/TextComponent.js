@@ -5,7 +5,7 @@ import { Modal } from 'semantic-ui-react';
 class TextComponent extends Component {
   render() {
     return (
-      <Modal.Content text style={{ whiteSpace: 'pre' }}>
+      <Modal.Content text="true" style={{ whiteSpace: 'pre' }}>
         {this.props.ocrText[this.props.currentSlide]}
       </Modal.Content>
     );

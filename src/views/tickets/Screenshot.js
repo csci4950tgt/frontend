@@ -32,9 +32,7 @@ export default class Screenshot extends Component {
     );
     let image = (
       <Slide index={0} key={0}>
-        <Header as="h4" dividing>
-          Default
-        </Header>
+        <Header as="h4">Full Screen Image</Header>
         <Image
           alt="fullpage screenshot"
           src={fullscreenImageURL}
@@ -65,7 +63,7 @@ export default class Screenshot extends Component {
         this.imageURLs.push(imageURL);
         let carouselImg = (
           <Slide index={i + 1} centered="true" key={i + 1}>
-            <Header as="h4" dividing></Header>
+            <Header as="h4">{filename}</Header>
             <Image
               alt="screenshot"
               src={getArtifactURL(this.props.ticketID, filename)}
@@ -98,7 +96,7 @@ export default class Screenshot extends Component {
     //interval="3500"
     return (
       <div>
-        <Segment maxwidth={100}>
+        <Segment style={{ maxWidth: '500px' }}>
           <CarouselProvider
             naturalSlideWidth={1}
             naturalSlideHeight={0.5}
