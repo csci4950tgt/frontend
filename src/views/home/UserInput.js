@@ -30,7 +30,7 @@ export default class UserInput extends Component {
           height: '',
           width: '',
           filename: 'screenshot0.png',
-          userAgent: '',
+          useragent: '',
         },
       ],
     },
@@ -59,7 +59,7 @@ export default class UserInput extends Component {
       //get the json object index of the select user agent
       const index = userAgents.findIndex(item => item.name === selection.value);
       let device = userAgents[index];
-      screenshotProp.userAgent = device.userAgent || '';
+      screenshotProp.useragent = device.useragent || '';
       screenshotProp.width = parseInt(device.width) || '';
       screenshotProp.height = parseInt(device.height) || '';
     }
@@ -72,8 +72,8 @@ export default class UserInput extends Component {
       }
     }
     // for custom user agents
-    if (e.target.value != null && e.target.name === 'userAgent') {
-      screenshotProp.userAgent = e.target.value || '';
+    if (e.target.value != null && e.target.name === 'useragent') {
+      screenshotProp.useragent = e.target.value || '';
     }
     this.setState({ screenshotProp });
   };
@@ -89,7 +89,7 @@ export default class UserInput extends Component {
           height: '',
           width: '',
           filename: `screenshot${len}.png`,
-          userAgent: '',
+          useragent: '',
         },
       ];
       return { ticket };
@@ -133,8 +133,6 @@ export default class UserInput extends Component {
       console.error('Error creating ticket!!');
       // TODO: let user know about error
     } else {
-      console.log(body);
-      console.log(res.ticket);
       this.setState({ newTicket: res.ticket });
     }
   };
@@ -278,7 +276,7 @@ const CustomScreenshotInput = ({ s, onChange, onClick, i, state }) => {
               style={{ width: '300px' }}
               placeholder="Custom user agent"
               onChange={e => onChange(e, i)}
-              value={s.userAgent}
+              value={s.useragent}
             />
           </Form.Group>
         </Grid.Column>
