@@ -42,23 +42,22 @@ export default class CodeBlock extends Component {
             });
           }
         } catch (error) {
-          this.setState({
-            filesBeingBlocked: true,
-            fileList: [
-              {
-                key: i,
-                text: (
-                  <span className="text">
-                    {name + ' (blocked by the adblocker)'}
-                  </span>
-                ),
-                value:
-                  'It looks like this resource is blocked by your adblocker',
-                // if we don't put value and this disabled entry is the first one, it will be pre-selected and highlighted
-                // see https://github.com/Semantic-Org/Semantic-UI-React/issues/3130#issuecomment-530703465
-                disabled: true,
-              },
-            ],
+          this.setState(prevState => {
+            return {
+              filesBeingBlocked: true,
+              fileList: [
+                ...prevState.fileList,
+                {
+                  key: i,
+                  text: name + ' (blocked by the adblocker)',
+                  value:
+                    'It looks like this resource is blocked by your adblocker',
+                  // if we don't put value and this disabled entry is the first one, it will be pre-selected and highlighted
+                  // see https://github.com/Semantic-Org/Semantic-UI-React/issues/3130#issuecomment-530703465
+                  disabled: true,
+                },
+              ],
+            };
           });
           console.error(error.message);
         }

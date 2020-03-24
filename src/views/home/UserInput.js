@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import {
   Button,
   Form,
@@ -8,9 +9,10 @@ import {
   Dropdown,
   Input,
 } from 'semantic-ui-react';
-import { Redirect } from 'react-router-dom';
-import { createTicket } from '../../utils/api';
-import { userAgentOptions } from '../../views/home/devices';
+
+// Utils
+import { createTicket } from '../../utils/api.js';
+import { userAgentOptions } from '../../views/home/devices.js';
 
 const userAgents = userAgentOptions.devices;
 
@@ -30,7 +32,7 @@ export default class UserInput extends Component {
           height: '',
           width: '',
           filename: 'screenshot0.png',
-          useragent: '',
+          userAgent: '',
         },
       ],
     },
@@ -59,7 +61,7 @@ export default class UserInput extends Component {
       //get the json object index of the select user agent
       const index = userAgents.findIndex(item => item.name === selection.value);
       let device = userAgents[index];
-      screenshotProp.useragent = device.useragent || '';
+      screenshotProp.userAgent = device.useragent || '';
       screenshotProp.width = parseInt(device.width) || '';
       screenshotProp.height = parseInt(device.height) || '';
     }
@@ -72,8 +74,8 @@ export default class UserInput extends Component {
       }
     }
     // for custom user agents
-    if (e.target.value != null && e.target.name === 'useragent') {
-      screenshotProp.useragent = e.target.value || '';
+    if (e.target.value != null && e.target.name === 'userAgent') {
+      screenshotProp.userAgent = e.target.value || '';
     }
     this.setState({ screenshotProp });
   };
@@ -89,7 +91,7 @@ export default class UserInput extends Component {
           height: '',
           width: '',
           filename: `screenshot${len}.png`,
-          useragent: '',
+          userAgent: '',
         },
       ];
       return { ticket };
@@ -276,7 +278,7 @@ const CustomScreenshotInput = ({ s, onChange, onClick, i, state }) => {
               style={{ width: '300px' }}
               placeholder="Custom user agent"
               onChange={e => onChange(e, i)}
-              value={s.useragent}
+              value={s.userAgent}
             />
           </Form.Group>
         </Grid.Column>

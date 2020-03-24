@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import 'pure-react-carousel/dist/react-carousel.es.css';
 import {
   Image,
   Segment,
@@ -8,9 +9,11 @@ import {
   Modal,
   Header,
 } from 'semantic-ui-react';
+
+// Utils
 import { getTicket, getArtifactURL, getArtifact } from '../../utils/api.js';
 
-import 'pure-react-carousel/dist/react-carousel.es.css';
+// Components
 import { CarouselProvider, Slide, Slider } from 'pure-react-carousel';
 import CustomDotGroup from '../../components/CustomDotGroup.js';
 import TextComponent from '../../utils/TextComponent.js';
@@ -74,17 +77,23 @@ export default class Screenshot extends Component {
         );
 
         this.carousel.push(carouselImg);
-        getArtifact(
+        const filenameExtension = getFilenameExtension(filename);
+        const fileArtifact = await getArtifact(
           this.props.ticketID,
-          'recognize-' + filename.slice(0, -4) + '.ocr'
-        ).then(res => {
-          this.ocrText.push(res);
-        });
+          'recognize-' + filenameExtension + '.ocr'
+        );
+        this.ocrText.push(fileArtifact);
       }
     } catch (error) {
       // todo: tell user about error
     }
   }
+
+  getFilenameExtension = filename => {
+    const splitFilename = filename.split('.');
+    return splitFilename[1];
+    // return filename.slice(0, -4);
+  };
 
   componentDidMount() {
     this.getTicket();
