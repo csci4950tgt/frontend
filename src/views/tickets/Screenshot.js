@@ -23,6 +23,8 @@ export default class Screenshot extends Component {
   state = {
     carouselLength: 0,
   };
+  // TODO: Refactor this!! Never should keep track of things in React
+  // Component outside of the state!!
   carousel = [];
   ocrText = [];
   imageURLs = [];
