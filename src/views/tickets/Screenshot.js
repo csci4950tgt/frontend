@@ -77,7 +77,7 @@ export default class Screenshot extends Component {
         );
 
         this.carousel.push(carouselImg);
-        const filenameExtension = getFilenameExtension(filename);
+        const filenameExtension = this.getFilenameExtension(filename);
         const fileArtifact = await getArtifact(
           this.props.ticketID,
           'recognize-' + filenameExtension + '.ocr'
