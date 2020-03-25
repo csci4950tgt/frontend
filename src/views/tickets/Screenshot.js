@@ -47,11 +47,12 @@ export default class Screenshot extends Component {
     );
     this.carousel.push(image);
     this.imageURLs.push(fullscreenImageURL);
-    getArtifact(this.props.ticketID, 'recognize-screenshotFull.ocr').then(
-      res => {
-        this.ocrText.push(res);
-      }
+
+    const res = await getArtifact(
+      this.props.ticketID,
+      'recognize-screenshotFull.ocr'
     );
+    this.ocrText.push(res);
     this.setState({ carouselLength: 1 });
 
     try {
@@ -77,10 +78,12 @@ export default class Screenshot extends Component {
         );
 
         this.carousel.push(carouselImg);
-        const filenameExtension = this.getFilenameExtension(filename);
+        const filenameWithoutExtension = this.getFilenameWithoutExtension(
+          filename
+        );
         const fileArtifact = await getArtifact(
           this.props.ticketID,
-          'recognize-' + filenameExtension + '.ocr'
+          'recognize-' + filenameWithoutExtension + '.ocr'
         );
         this.ocrText.push(fileArtifact);
       }
@@ -89,9 +92,9 @@ export default class Screenshot extends Component {
     }
   }
 
-  getFilenameExtension = filename => {
+  getFilenameWithoutExtension = filename => {
     const splitFilename = filename.split('.');
-    return splitFilename[1];
+    return splitFilename[0];
     // return filename.slice(0, -4);
   };
 
