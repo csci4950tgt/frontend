@@ -12,7 +12,7 @@ export default class CodeBlock extends Component {
     this.state = {
       filesBeingBlocked: false,
       currentCode: '',
-      fileList: [],
+      fileList: null,
     };
   }
 
@@ -38,6 +38,14 @@ export default class CodeBlock extends Component {
       let currentCode;
       if (fileList.length > 0) {
         currentCode = fileList[0]['value'];
+      } else {
+        currentCode = 'No JavaScript found on this website.';
+        fileList.push({
+          key: 'No JavaScript found',
+          text: 'No JavaScript found',
+          value: currentCode,
+          disabled: true,
+        });
       }
       this.setState({ fileList, currentCode });
     } catch (error) {
@@ -85,7 +93,7 @@ export default class CodeBlock extends Component {
             </p>
           </Message>
         )}
-        {this.state.fileList.length > 0 ? (
+        {this.state.fileList ? (
           <>
             <Dropdown
               fluid
