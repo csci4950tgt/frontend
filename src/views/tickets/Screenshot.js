@@ -54,6 +54,7 @@ export default class Screenshot extends Component {
     );
     this.carousel.push(image);
     this.imageURLs.push(fullscreenImageURL);
+    this.ocrText.push('OCR not run on this file.');
     this.setState({ carouselLength: 1 });
 
     try {
