@@ -11,13 +11,17 @@ import {
 } from 'semantic-ui-react';
 
 // Utils
-// import { getTicket, getArtifactURL, getArtifact } from '../../utils/api.js';
-import { getTicket, getArtifactURL } from '../../utils/api.js';
+import {
+  getTicket,
+  getArtifactURL,
+  getArtifact,
+  getArtifactListing,
+} from '../../utils/api.js';
 
 // Components
 import { CarouselProvider, Slide, Slider } from 'pure-react-carousel';
 import CustomDotGroup from '../../components/CustomDotGroup.js';
-// import TextComponent from '../../utils/TextComponent.js';
+import TextComponent from '../../utils/TextComponent.js';
 import ImageComponent from '../../utils/ImageComponent.js';
 
 export default class Screenshot extends Component {
@@ -27,7 +31,7 @@ export default class Screenshot extends Component {
   // TODO: Refactor this!! Never should keep track of things in React
   // Component outside of the state!!
   carousel = [];
-  // ocrText = [];
+  ocrText = [];
   imageURLs = [];
 
   async getTicket() {
@@ -50,20 +54,12 @@ export default class Screenshot extends Component {
     );
     this.carousel.push(image);
     this.imageURLs.push(fullscreenImageURL);
-
-    // const res = await getArtifact(
-    //   this.props.ticketID,
-    //   'recognize-screenshotFull.ocr'
-    // );
-    // this.ocrText.push(res);
+    this.ocrText.push('OCR not run on this file.');
     this.setState({ carouselLength: 1 });
 
     try {
       let ticket = await getTicket(this.props.ticketID);
-      this.setState({
-        carouselLength:
-          this.state.carouselLength + ticket.ticket.screenshots.length,
-      });
+
       for (let i in ticket.ticket.screenshots) {
         const filename = ticket.ticket.screenshots[i].filename;
         const imageURL = getArtifactURL(this.props.ticketID, filename);
@@ -81,25 +77,63 @@ export default class Screenshot extends Component {
         );
 
         this.carousel.push(carouselImg);
-        // const filenameWithoutExtension = this.getFilenameWithoutExtension(
-        //   filename
-        // );
-        // const fileArtifact = await getArtifact(
-        //   this.props.ticketID,
-        //   'recognize-' + filenameWithoutExtension + '.ocr'
-        // );
-        // this.ocrText.push(fileArtifact);
+        this.ocrText.push('OCR not run on this file.');
       }
+
+      let artifactListing = await getArtifactListing(this.props.ticketID);
+
+      // find images that have associated OCR logs
+      artifactListing = artifactListing.fileArtifacts;
+
+      artifactListing = artifactListing.filter(a1 =>
+        artifactListing.some(
+          a2 =>
+            a2.filename ===
+            `recognize-${this.getFilenameWithoutExtension(a1.filename)}.ocr`
+        )
+      );
+
+      // create objects for them in the carousel
+      for (let i in artifactListing) {
+        const image = artifactListing[i];
+        const artifactUrl = getArtifactURL(this.props.ticketID, image.filename);
+        this.imageURLs.push(artifactUrl);
+
+        let carouselImg = (
+          <Slide
+            index={this.carousel.length + 2}
+            centered="true"
+            key={this.carousel.length + 2}
+          >
+            <Header as="h4">{image.filename}</Header>
+            <Image alt="captured image" src={artifactUrl} bordered centered />
+          </Slide>
+        );
+
+        this.carousel.push(carouselImg);
+
+        // fetch OCR text
+        const fileArtifact = await getArtifact(
+          this.props.ticketID,
+          `recognize-${this.getFilenameWithoutExtension(image.filename)}.ocr`
+        );
+        this.ocrText.push(fileArtifact);
+      }
+
+      this.setState({
+        carouselLength: this.carousel.length,
+      });
     } catch (error) {
+      console.error(error);
       // todo: tell user about error
     }
   }
 
-  // getFilenameWithoutExtension = filename => {
-  //   const splitFilename = filename.split('.');
-  //   return splitFilename[0];
-  //   // return filename.slice(0, -4);
-  // };
+  getFilenameWithoutExtension = filename => {
+    const path = filename.split('/');
+
+    return path[path.length - 1].split('.')[0];
+  };
 
   componentDidMount() {
     this.getTicket();
@@ -128,15 +162,17 @@ export default class Screenshot extends Component {
             >
               <ImageComponent images={this.imageURLs} />
             </Modal>
-            {/* <Modal
-              trigger={
-                <Button floated="right" icon>
-                  <Icon name="font" />
-                </Button>
-              }
-            >
-              <TextComponent ocrText={this.ocrText} />
-            </Modal> */}
+            {
+              <Modal
+                trigger={
+                  <Button floated="right" icon>
+                    <Icon name="font" />
+                  </Button>
+                }
+              >
+                <TextComponent ocrText={this.ocrText} />
+              </Modal>
+            }
             <CustomDotGroup slides={this.state.carouselLength} />
           </CarouselProvider>
         </Segment>
