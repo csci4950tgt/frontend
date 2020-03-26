@@ -11,12 +11,13 @@ import {
 } from 'semantic-ui-react';
 
 // Utils
-import { getTicket, getArtifactURL, getArtifact } from '../../utils/api.js';
+// import { getTicket, getArtifactURL, getArtifact } from '../../utils/api.js';
+import { getTicket, getArtifactURL } from '../../utils/api.js';
 
 // Components
 import { CarouselProvider, Slide, Slider } from 'pure-react-carousel';
 import CustomDotGroup from '../../components/CustomDotGroup.js';
-import TextComponent from '../../utils/TextComponent.js';
+// import TextComponent from '../../utils/TextComponent.js';
 import ImageComponent from '../../utils/ImageComponent.js';
 
 export default class Screenshot extends Component {
@@ -26,7 +27,7 @@ export default class Screenshot extends Component {
   // TODO: Refactor this!! Never should keep track of things in React
   // Component outside of the state!!
   carousel = [];
-  ocrText = [];
+  // ocrText = [];
   imageURLs = [];
 
   async getTicket() {
@@ -50,11 +51,11 @@ export default class Screenshot extends Component {
     this.carousel.push(image);
     this.imageURLs.push(fullscreenImageURL);
 
-    const res = await getArtifact(
-      this.props.ticketID,
-      'recognize-screenshotFull.ocr'
-    );
-    this.ocrText.push(res);
+    // const res = await getArtifact(
+    //   this.props.ticketID,
+    //   'recognize-screenshotFull.ocr'
+    // );
+    // this.ocrText.push(res);
     this.setState({ carouselLength: 1 });
 
     try {
@@ -80,25 +81,25 @@ export default class Screenshot extends Component {
         );
 
         this.carousel.push(carouselImg);
-        const filenameWithoutExtension = this.getFilenameWithoutExtension(
-          filename
-        );
-        const fileArtifact = await getArtifact(
-          this.props.ticketID,
-          'recognize-' + filenameWithoutExtension + '.ocr'
-        );
-        this.ocrText.push(fileArtifact);
+        // const filenameWithoutExtension = this.getFilenameWithoutExtension(
+        //   filename
+        // );
+        // const fileArtifact = await getArtifact(
+        //   this.props.ticketID,
+        //   'recognize-' + filenameWithoutExtension + '.ocr'
+        // );
+        // this.ocrText.push(fileArtifact);
       }
     } catch (error) {
       // todo: tell user about error
     }
   }
 
-  getFilenameWithoutExtension = filename => {
-    const splitFilename = filename.split('.');
-    return splitFilename[0];
-    // return filename.slice(0, -4);
-  };
+  // getFilenameWithoutExtension = filename => {
+  //   const splitFilename = filename.split('.');
+  //   return splitFilename[0];
+  //   // return filename.slice(0, -4);
+  // };
 
   componentDidMount() {
     this.getTicket();
@@ -127,7 +128,7 @@ export default class Screenshot extends Component {
             >
               <ImageComponent images={this.imageURLs} />
             </Modal>
-            <Modal
+            {/* <Modal
               trigger={
                 <Button floated="right" icon>
                   <Icon name="font" />
@@ -135,7 +136,7 @@ export default class Screenshot extends Component {
               }
             >
               <TextComponent ocrText={this.ocrText} />
-            </Modal>
+            </Modal> */}
             <CustomDotGroup slides={this.state.carouselLength} />
           </CarouselProvider>
         </Segment>
