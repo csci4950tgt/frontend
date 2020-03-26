@@ -29,7 +29,6 @@ export default class CodeBlock extends Component {
       // Asynchronously fetch all artifact filenames, resolve into list
       const jsArtifactPromises = artifacts.map(async a => {
         const res = await getArtifact(ticketId, a.filename);
-        console.log(res);
         return { key: a.filename, text: a.filename, value: beautify(res) };
       });
 
