@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-import { Loader, Placeholder, Segment, Divider } from 'semantic-ui-react';
+import { Loader, Placeholder, Segment } from 'semantic-ui-react';
 
-import Screenshot from './Screenshot';
-import JSViewer from './JSViewer';
 import { getTicket } from '../../utils/api.js';
-import SafeBrowsing from './SafeBrowsing';
 import TicketNotFound from './TicketNotFound';
-
+import UrlAnalysis from './UrlAnalysis';
 
 const REFRESH_EVERY_MS = 1000;
 
@@ -20,7 +17,6 @@ export default class Ticket extends Component {
         height: props.match.params.height,
         width: props.match.params.width,
       },
-      currentCode: '',
       malwareMatches: '[]',
       hasError: '',
     };
@@ -47,11 +43,10 @@ export default class Ticket extends Component {
 
     try {
       const ticket = await getTicket(ticketId);
-      const { processed } = ticket.ticket;
-      console.log(ticket.ticket);
+      const { processed, url } = ticket.ticket;
 
       this.setState({
-        ticketInfo: { ...this.state.ticketInfo, processed },
+        ticketInfo: { ...this.state.ticketInfo, processed, url },
         malwareMatches: ticket.ticket.malwareMatches,
       });
 
@@ -61,10 +56,6 @@ export default class Ticket extends Component {
     } catch (error) {
       this.setState({ hasError: error.message });
     }
-  };
-
-  onFileSelectionChange = (e, data) => {
-    this.setState({ currentCode: data.value });
   };
 
   static getDerivedStateFromError = error => {
@@ -107,16 +98,10 @@ export default class Ticket extends Component {
             </div>
           )}
           {this.state.ticketInfo.processed && (
-            <>
-              <Screenshot ticketID={ticketInfo.ticketID} />
-              <Divider hidden />
-              <JSViewer
-                ticketID={ticketInfo.ticketID}
-                onFileSelectionChange={this.onFileSelectionChange}
-                code={this.state.currentCode}
-              />
-            <SafeBrowsing matches={this.state.malwareMatches} />
-            </>
+            <UrlAnalysis
+              ticket={this.state}
+              onFileSelectionChange={this.onFileSelectionChange}
+            />
           )}
         </>
       );

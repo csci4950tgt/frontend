@@ -5,7 +5,6 @@ export default class SafeBrowsing extends Component {
   constructor(props) {
     super(props);
     this.matches = JSON.parse(this.props.matches);
-    console.log(this.matches);
     this.setColor();
   }
 

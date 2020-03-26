@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import {
   Button,
   Form,
@@ -8,9 +9,10 @@ import {
   Dropdown,
   Input,
 } from 'semantic-ui-react';
-import { Redirect } from 'react-router-dom';
-import { createTicket } from '../../utils/api';
-import { userAgentOptions } from '../../views/home/devices';
+
+// Utils
+import { createTicket } from '../../utils/api.js';
+import { userAgentOptions } from '../../views/home/devices.js';
 
 const userAgents = userAgentOptions.devices;
 
@@ -59,7 +61,7 @@ export default class UserInput extends Component {
       //get the json object index of the select user agent
       const index = userAgents.findIndex(item => item.name === selection.value);
       let device = userAgents[index];
-      screenshotProp.userAgent = device.userAgent || '';
+      screenshotProp.userAgent = device.useragent || '';
       screenshotProp.width = parseInt(device.width) || '';
       screenshotProp.height = parseInt(device.height) || '';
     }
@@ -133,8 +135,6 @@ export default class UserInput extends Component {
       console.error('Error creating ticket!!');
       // TODO: let user know about error
     } else {
-      console.log(body);
-      console.log(res.ticket);
       this.setState({ newTicket: res.ticket });
     }
   };

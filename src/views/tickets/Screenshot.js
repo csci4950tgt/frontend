@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import 'pure-react-carousel/dist/react-carousel.es.css';
 import {
   Image,
   Segment,
@@ -8,39 +9,54 @@ import {
   Modal,
   Header,
 } from 'semantic-ui-react';
+
+// Utils
+// import { getTicket, getArtifactURL, getArtifact } from '../../utils/api.js';
 import { getTicket, getArtifactURL } from '../../utils/api.js';
 
-import 'pure-react-carousel/dist/react-carousel.es.css';
+// Components
 import { CarouselProvider, Slide, Slider } from 'pure-react-carousel';
 import CustomDotGroup from '../../components/CustomDotGroup.js';
-
-import { userAgentOptions } from '../../views/home/devices';
-const userAgents = userAgentOptions.devices;
+// import TextComponent from '../../utils/TextComponent.js';
+import ImageComponent from '../../utils/ImageComponent.js';
 
 export default class Screenshot extends Component {
   state = {
-    carouselLength: 1,
-    carousel: [],
+    carouselLength: 0,
   };
+  // TODO: Refactor this!! Never should keep track of things in React
+  // Component outside of the state!!
+  carousel = [];
+  // ocrText = [];
+  imageURLs = [];
+
   async getTicket() {
     // always get full page screenshot and add it to the carousel
+    let fullscreenImageURL = getArtifactURL(
+      this.props.ticketID,
+      'screenshotFull.png'
+    );
     let image = (
-      <Slide index={0}>
-        <Header as="h4" dividing>
-          Default
-        </Header>
+      <Slide index={0} key={0}>
+        <Header as="h4">Full Screen Image</Header>
         <Image
           alt="fullpage screenshot"
-          src={getArtifactURL(this.props.ticketID, 'screenshotFull.png')}
+          src={fullscreenImageURL}
           bordered
           centered
           fluid
         />
       </Slide>
     );
-    let carouselTemp = [];
-    carouselTemp.push(image);
-    this.setState({ carousel: carouselTemp });
+    this.carousel.push(image);
+    this.imageURLs.push(fullscreenImageURL);
+
+    // const res = await getArtifact(
+    //   this.props.ticketID,
+    //   'recognize-screenshotFull.ocr'
+    // );
+    // this.ocrText.push(res);
+    this.setState({ carouselLength: 1 });
 
     try {
       let ticket = await getTicket(this.props.ticketID);
@@ -50,22 +66,11 @@ export default class Screenshot extends Component {
       });
       for (let i in ticket.ticket.screenshots) {
         const filename = ticket.ticket.screenshots[i].filename;
-        const userAgent = ticket.ticket.screenshots[i].userAgent;
-        //get the json object index of the user agent
-        const index = userAgents.findIndex(
-          item => item.userAgent === userAgent
-        );
-        let deviceName;
-        if (index > -1) {
-          deviceName = userAgents[index].name;
-        } else {
-          deviceName = 'Custom';
-        }
+        const imageURL = getArtifactURL(this.props.ticketID, filename);
+        this.imageURLs.push(imageURL);
         let carouselImg = (
-          <Slide index={i + 1} centered>
-            <Header as="h4" dividing>
-              {deviceName}
-            </Header>
+          <Slide index={i + 1} centered="true" key={i + 1}>
+            <Header as="h4">{filename}</Header>
             <Image
               alt="screenshot"
               src={getArtifactURL(this.props.ticketID, filename)}
@@ -74,13 +79,27 @@ export default class Screenshot extends Component {
             />
           </Slide>
         );
-        carouselTemp.push(carouselImg);
-        this.setState({ carousel: carouselTemp });
+
+        this.carousel.push(carouselImg);
+        // const filenameWithoutExtension = this.getFilenameWithoutExtension(
+        //   filename
+        // );
+        // const fileArtifact = await getArtifact(
+        //   this.props.ticketID,
+        //   'recognize-' + filenameWithoutExtension + '.ocr'
+        // );
+        // this.ocrText.push(fileArtifact);
       }
     } catch (error) {
       // todo: tell user about error
     }
   }
+
+  // getFilenameWithoutExtension = filename => {
+  //   const splitFilename = filename.split('.');
+  //   return splitFilename[0];
+  //   // return filename.slice(0, -4);
+  // };
 
   componentDidMount() {
     this.getTicket();
@@ -92,35 +111,32 @@ export default class Screenshot extends Component {
     //interval="3500"
     return (
       <div>
-        <Segment maxwidth={100}>
+        <Segment>
           <CarouselProvider
             naturalSlideWidth={1}
             naturalSlideHeight={0.5}
             totalSlides={this.state.carouselLength}
           >
-            <Slider>{this.state.carousel}</Slider>
+            <Slider>{this.carousel}</Slider>
             <Divider />
             <Modal
               trigger={
                 <Button floated="right" icon>
-                  {' '}
-                  <Icon name="expand" />{' '}
+                  <Icon name="expand" />
                 </Button>
               }
             >
-              <Modal.Content image>
-                <Image
-                  alt="fullpage screenshot"
-                  src={getArtifactURL(
-                    this.props.ticketID,
-                    'screenshotFull.png'
-                  )}
-                  bordered
-                  centered
-                  fluid
-                />
-              </Modal.Content>
+              <ImageComponent images={this.imageURLs} />
             </Modal>
+            {/* <Modal
+              trigger={
+                <Button floated="right" icon>
+                  <Icon name="font" />
+                </Button>
+              }
+            >
+              <TextComponent ocrText={this.ocrText} />
+            </Modal> */}
             <CustomDotGroup slides={this.state.carouselLength} />
           </CarouselProvider>
         </Segment>
