@@ -20,48 +20,20 @@ export default class CodeBlock extends Component {
     const ticketId = this.props.ticketID;
 
     try {
+      // Get file artifact listings, filter for js files
       const res = await getArtifactListing(ticketId);
       const artifacts = res.fileArtifacts.filter(artifact =>
         artifact.filename.endsWith('.js')
       );
 
-      const fileList = [];
+      // Asynchronously fetch all artifact filenames, resolve into list
+      const jsArtifactPromises = artifacts.map(async a => {
+        const res = await getArtifact(ticketId, a.filename);
+        console.log(res);
+        return { key: a.filename, text: a.filename, value: beautify(res) };
+      });
 
-      // Loop through artifact filenames, fetch them, push into list
-      for (let i in artifacts) {
-        const name = artifacts[i].filename;
-
-        try {
-          if (!fileList.find(i => i.key === name)) {
-            const res = await getArtifact(ticketId, name);
-            fileList.push({
-              key: i,
-              // text: <span className="text">{name}</span>,
-              text: name,
-              value: beautify(res),
-            });
-          }
-        } catch (error) {
-          this.setState(prevState => {
-            return {
-              filesBeingBlocked: true,
-              fileList: [
-                ...prevState.fileList,
-                {
-                  key: i,
-                  text: name + ' (blocked by the adblocker)',
-                  value:
-                    'It looks like this resource is blocked by your adblocker',
-                  // if we don't put value and this disabled entry is the first one, it will be pre-selected and highlighted
-                  // see https://github.com/Semantic-Org/Semantic-UI-React/issues/3130#issuecomment-530703465
-                  disabled: true,
-                },
-              ],
-            };
-          });
-          console.error(error.message);
-        }
-      }
+      const fileList = await Promise.all(jsArtifactPromises);
 
       // Successfully got js file artifacts, save in state
       let currentCode;
@@ -71,6 +43,24 @@ export default class CodeBlock extends Component {
       this.setState({ fileList, currentCode });
     } catch (error) {
       // TODO: let user know about error getting artifact listing
+      // this.setState(prevState => {
+      //       return {
+      //         filesBeingBlocked: true,
+      //         fileList: [
+      //           ...prevState.fileList,
+      //           {
+      //             key: i,
+      //             text: name + ' (blocked by the adblocker)',
+      //             value:
+      //               'It looks like this resource is blocked by your adblocker',
+      //             // if we don't put value and this disabled entry is the first one, it will be pre-selected and highlighted
+      //             // see https://github.com/Semantic-Org/Semantic-UI-React/issues/3130#issuecomment-530703465
+      //             disabled: true,
+      //           },
+      //         ],
+      //       };
+      //     });
+      console.error(error.message);
     }
   }
 
