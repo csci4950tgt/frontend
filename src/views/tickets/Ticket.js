@@ -10,7 +10,6 @@ const REFRESH_EVERY_MS = 1000;
 export default class Ticket extends Component {
   constructor(props) {
     super(props);
-    console.log(props);
     this.state = {
       ticketInfo: {
         ticketID: props.match.params.ticketID,
