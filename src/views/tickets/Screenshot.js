@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import 'pure-react-carousel/dist/react-carousel.es.css';
 import {
   Image,
   Segment,
@@ -8,64 +9,64 @@ import {
   Modal,
   Header,
 } from 'semantic-ui-react';
-import { getTicket, getArtifactURL } from '../../utils/api.js';
 
-import 'pure-react-carousel/dist/react-carousel.es.css';
+// Utils
+import {
+  getTicket,
+  getArtifactURL,
+  getArtifact,
+  getArtifactListing,
+} from '../../utils/api.js';
+
+// Components
 import { CarouselProvider, Slide, Slider } from 'pure-react-carousel';
 import CustomDotGroup from '../../components/CustomDotGroup.js';
-
-import { userAgentOptions } from '../../views/home/devices';
-const userAgents = userAgentOptions.devices;
+import TextComponent from '../../utils/TextComponent.js';
+import ImageComponent from '../../utils/ImageComponent.js';
 
 export default class Screenshot extends Component {
   state = {
-    carouselLength: 1,
-    carousel: [],
+    carouselLength: 0,
   };
+  // TODO: Refactor this!! Never should keep track of things in React
+  // Component outside of the state!!
+  carousel = [];
+  ocrText = [];
+  imageURLs = [];
+
   async getTicket() {
     // always get full page screenshot and add it to the carousel
+    let fullscreenImageURL = getArtifactURL(
+      this.props.ticketID,
+      'screenshotFull.png'
+    );
     let image = (
-      <Slide index={0}>
-        <Header as="h4" dividing>
-          Default
-        </Header>
+      <Slide index={0} key={0}>
+        <Header as="h4">Full Screen Image</Header>
         <Image
           alt="fullpage screenshot"
-          src={getArtifactURL(this.props.ticketID, 'screenshotFull.png')}
+          src={fullscreenImageURL}
           bordered
           centered
           fluid
         />
       </Slide>
     );
-    let carouselTemp = [];
-    carouselTemp.push(image);
-    this.setState({ carousel: carouselTemp });
+    this.carousel.push(image);
+    this.imageURLs.push(fullscreenImageURL);
+    this.ocrText.push('OCR not run on this file.');
+    this.setState({ carouselLength: 1 });
 
     try {
       let ticket = await getTicket(this.props.ticketID);
-      this.setState({
-        carouselLength:
-          this.state.carouselLength + ticket.ticket.screenshots.length,
-      });
+
       for (let i in ticket.ticket.screenshots) {
         const filename = ticket.ticket.screenshots[i].filename;
-        const userAgent = ticket.ticket.screenshots[i].userAgent;
-        //get the json object index of the user agent
-        const index = userAgents.findIndex(
-          item => item.userAgent === userAgent
-        );
-        let deviceName;
-        if (index > -1) {
-          deviceName = userAgents[index].name;
-        } else {
-          deviceName = 'Custom';
-        }
+        const imageURL = getArtifactURL(this.props.ticketID, filename);
+        this.imageURLs.push(imageURL);
         let carouselImg = (
-          <Slide index={i + 1} centered>
-            <Header as="h4" dividing>
-              {deviceName}
-            </Header>
+          <Slide index={i + 1} centered="true" key={i + 1}>
+            <Header as="h4">{filename}</Header>
             <Image
               alt="screenshot"
               src={getArtifactURL(this.props.ticketID, filename)}
@@ -74,13 +75,65 @@ export default class Screenshot extends Component {
             />
           </Slide>
         );
-        carouselTemp.push(carouselImg);
-        this.setState({ carousel: carouselTemp });
+
+        this.carousel.push(carouselImg);
+        this.ocrText.push('OCR not run on this file.');
       }
+
+      let artifactListing = await getArtifactListing(this.props.ticketID);
+
+      // find images that have associated OCR logs
+      artifactListing = artifactListing.fileArtifacts;
+
+      artifactListing = artifactListing.filter(a1 =>
+        artifactListing.some(
+          a2 =>
+            a2.filename ===
+            `recognize-${this.getFilenameWithoutExtension(a1.filename)}.ocr`
+        )
+      );
+
+      // create objects for them in the carousel
+      for (let i in artifactListing) {
+        const image = artifactListing[i];
+        const artifactUrl = getArtifactURL(this.props.ticketID, image.filename);
+        this.imageURLs.push(artifactUrl);
+
+        let carouselImg = (
+          <Slide
+            index={this.carousel.length + 2}
+            centered="true"
+            key={this.carousel.length + 2}
+          >
+            <Header as="h4">{image.filename}</Header>
+            <Image alt="captured image" src={artifactUrl} bordered centered />
+          </Slide>
+        );
+
+        this.carousel.push(carouselImg);
+
+        // fetch OCR text
+        const fileArtifact = await getArtifact(
+          this.props.ticketID,
+          `recognize-${this.getFilenameWithoutExtension(image.filename)}.ocr`
+        );
+        this.ocrText.push(fileArtifact);
+      }
+
+      this.setState({
+        carouselLength: this.carousel.length,
+      });
     } catch (error) {
+      console.error(error);
       // todo: tell user about error
     }
   }
+
+  getFilenameWithoutExtension = filename => {
+    const path = filename.split('/');
+
+    return path[path.length - 1].split('.')[0];
+  };
 
   componentDidMount() {
     this.getTicket();
@@ -92,35 +145,34 @@ export default class Screenshot extends Component {
     //interval="3500"
     return (
       <div>
-        <Segment maxwidth={100}>
+        <Segment>
           <CarouselProvider
             naturalSlideWidth={1}
             naturalSlideHeight={0.5}
             totalSlides={this.state.carouselLength}
           >
-            <Slider>{this.state.carousel}</Slider>
+            <Slider>{this.carousel}</Slider>
             <Divider />
             <Modal
               trigger={
                 <Button floated="right" icon>
-                  {' '}
-                  <Icon name="expand" />{' '}
+                  <Icon name="expand" />
                 </Button>
               }
             >
-              <Modal.Content image>
-                <Image
-                  alt="fullpage screenshot"
-                  src={getArtifactURL(
-                    this.props.ticketID,
-                    'screenshotFull.png'
-                  )}
-                  bordered
-                  centered
-                  fluid
-                />
-              </Modal.Content>
+              <ImageComponent images={this.imageURLs} />
             </Modal>
+            {
+              <Modal
+                trigger={
+                  <Button floated="right" icon>
+                    <Icon name="font" />
+                  </Button>
+                }
+              >
+                <TextComponent ocrText={this.ocrText} />
+              </Modal>
+            }
             <CustomDotGroup slides={this.state.carouselLength} />
           </CarouselProvider>
         </Segment>

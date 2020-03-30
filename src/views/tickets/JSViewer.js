@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dropdown, Message } from 'semantic-ui-react';
+import { Dropdown, Message, Loader, Segment, Dimmer } from 'semantic-ui-react';
 import AceEditor from 'react-ace';
 import { getArtifact, getArtifactListing } from '../../utils/api';
 import { js as beautify } from 'js-beautify';
@@ -11,53 +11,63 @@ export default class CodeBlock extends Component {
     super(props);
     this.state = {
       filesBeingBlocked: false,
+      currentCode: '',
+      fileList: null,
     };
   }
-
-  fileList = [];
 
   async fetchArtifacts() {
     const ticketId = this.props.ticketID;
 
     try {
+      // Get file artifact listings, filter for js files
       const res = await getArtifactListing(ticketId);
       const artifacts = res.fileArtifacts.filter(artifact =>
         artifact.filename.endsWith('.js')
       );
 
-      for (let i in artifacts) {
-        const name = artifacts[i].filename;
+      // Asynchronously fetch all artifact filenames, resolve into list
+      const jsArtifactPromises = artifacts.map(async a => {
+        const res = await getArtifact(ticketId, a.filename);
+        return { key: a.filename, text: a.filename, value: beautify(res) };
+      });
 
-        if (!this.fileList.find(i => i.key === name)) {
-          getArtifact(ticketId, name)
-            .then(res => {
-              this.fileList.push({
-                key: name,
-                text: <span className="text">{name}</span>,
-                value: beautify(res),
-              });
-            })
-            .catch(error => {
-              this.setState({ filesBeingBlocked: true });
+      const fileList = await Promise.all(jsArtifactPromises);
 
-              this.fileList.push({
-                key: name,
-                text: (
-                  <span className="text">
-                    {name + ' (blocked by the adblocker)'}
-                  </span>
-                ),
-                value: 'dummy value',
-                // if we don't put value and this disabled entry is the first one, it will be pre-selected and highlighted
-                // see https://github.com/Semantic-Org/Semantic-UI-React/issues/3130#issuecomment-530703465
-                disabled: true,
-              });
-              console.log(error);
-            });
-        }
+      // Successfully got js file artifacts, save in state
+      let currentCode;
+      if (fileList.length > 0) {
+        currentCode = fileList[0]['value'];
+      } else {
+        currentCode = 'No JavaScript found on this website.';
+        fileList.push({
+          key: 'No JavaScript found',
+          text: 'No JavaScript found',
+          value: currentCode,
+          disabled: true,
+        });
       }
+      this.setState({ fileList, currentCode });
     } catch (error) {
-      // todo: tell user about error
+      // TODO: let user know about error getting artifact listing
+      // this.setState(prevState => {
+      //       return {
+      //         filesBeingBlocked: true,
+      //         fileList: [
+      //           ...prevState.fileList,
+      //           {
+      //             key: i,
+      //             text: name + ' (blocked by the adblocker)',
+      //             value:
+      //               'It looks like this resource is blocked by your adblocker',
+      //             // if we don't put value and this disabled entry is the first one, it will be pre-selected and highlighted
+      //             // see https://github.com/Semantic-Org/Semantic-UI-React/issues/3130#issuecomment-530703465
+      //             disabled: true,
+      //           },
+      //         ],
+      //       };
+      //     });
+      console.error(error.message);
     }
   }
 
@@ -65,8 +75,8 @@ export default class CodeBlock extends Component {
     this.fetchArtifacts();
   }
 
-  handleOnChange = (e, data) => {
-    this.props.onFileSelectionChange(e, data);
+  handleFileChange = (e, data) => {
+    this.setState({ currentCode: data.value });
   };
 
   render() {
@@ -83,24 +93,35 @@ export default class CodeBlock extends Component {
             </p>
           </Message>
         )}
-        <Dropdown
-          placeholder="Select a File"
-          fluid
-          selection
-          options={this.fileList}
-          onChange={this.handleOnChange}
-        />
-        <AceEditor
-          mode="javascript"
-          theme="monokai"
-          readOnly={true}
-          width=""
-          height="800px"
-          value={this.props.code}
-          cursorStart={1}
-          wrapEnabled={true}
-          editorProps={{ $blockScrolling: true }}
-        />
+        {this.state.fileList ? (
+          <>
+            <Dropdown
+              fluid
+              selection
+              options={this.state.fileList}
+              value={this.state.currentCode}
+              onChange={this.handleFileChange}
+            />
+            <AceEditor
+              mode="javascript"
+              theme="monokai"
+              readOnly={true}
+              // width="500px"
+              // height="700px"
+              width="100%"
+              value={this.state.currentCode}
+              cursorStart={1}
+              wrapEnabled={true}
+              editorProps={{ $blockScrolling: true }}
+            />
+          </>
+        ) : (
+          <Segment style={{ height: '500px' }}>
+            <Dimmer active>
+              <Loader />
+            </Dimmer>
+          </Segment>
+        )}
       </>
     );
   }
