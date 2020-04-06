@@ -1,5 +1,14 @@
-// const API_STUB = process.env.REACT_APP_API_STUB || 'http://localhost:8080/api';
-const API_STUB = 'https://api-bwkgpgz7aq-uc.a.run.app/api';
+// Use the Cloud Run API in production), else the local api server
+// Use the Cloud Run API in production by default, override with local config
+// This may seem counterintuitive
+// let API_STUB = 'https://api-bwkgpgz7aq-uc.a.run.app/api';
+// if (process.env.NODE_ENV !== 'production') {
+//   API_STUB = process.env.API_STUB || 'http://localhost:8080/api';
+// }
+
+// Get API_STUB env variable from window, default to localhost otherwise
+const API_STUB = window._env_.API_STUB || 'http://localhost:8080/api';
+
 const throwIfNot200 = res => {
   if (res.status >= 200 && res.status < 300) {
     return Promise.resolve(res);
