@@ -21,6 +21,9 @@
     "add-env-vars": "chmod +x ./env.sh && ./env.sh && cp env-config.js ./public/",
     "start": "npm run add-env-vars && react-scripts start",
     "build": "react-scripts build",
+    "gcloud-build": "gcloud builds submit --tag gcr.io/vigilante-web-heist/frontend",
+    "gcloud-deploy": "gcloud run deploy --image gcr.io/vigilante-web-heist/frontend --platform managed",
+    "deploy": "npm run gcloud-build && npm run gcloud-deploy",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
