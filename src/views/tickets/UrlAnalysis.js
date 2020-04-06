@@ -23,7 +23,7 @@ const UrlAnalysis = ({ ticket }) => {
         <Grid.Column>
           {/* Summary Box */}
           <SectionTitle title="Summary" />
-          <SummaryBox malwareMatches={malwareMatches} />
+          <SummaryBox malwareMatches={malwareMatches} ticketID={ticketID} />
           {/* Screenshot & OCR */}
           <SectionTitle title="Screenshot" />
           <Screenshot ticketID={ticketID} />
