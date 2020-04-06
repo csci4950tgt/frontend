@@ -64,8 +64,8 @@ export default class Yara extends Component {
       }
 
       this.setState({
-        processed: processed,
-        matchedRules: matchedRules,
+        processed,
+        matchedRules,
       });
 
       if (processed) {
