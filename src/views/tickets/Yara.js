@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Segment, List } from 'semantic-ui-react';
+import { Segment, List, Dimmer, Loader } from 'semantic-ui-react';
 import { getArtifactListing, getArtifact, getTicket } from '../../utils/api.js';
 
 const REFRESH_EVERY_MS = 1000;
@@ -93,9 +93,7 @@ export default class Yara extends Component {
             <Segment size="huge" attached="top" inverted>
               Yara Results
             </Segment>
-            <Segment attached="bottom">
-              <h3>Waiting for Yara Results</h3>
-            </Segment>
+            <Segment loading attached="bottom" padded="very" />
           </>
         )}
         {this.state.processed && (
