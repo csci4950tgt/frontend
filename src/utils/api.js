@@ -1,5 +1,5 @@
-const API_STUB = process.env.API_STUB || 'http://localhost:8080/api';
-
+// const API_STUB = process.env.REACT_APP_API_STUB || 'http://localhost:8080/api';
+const API_STUB = 'https://api-bwkgpgz7aq-uc.a.run.app/api';
 const throwIfNot200 = res => {
   if (res.status >= 200 && res.status < 300) {
     return Promise.resolve(res);
