@@ -38,5 +38,5 @@ RUN apk add --no-cache bash
 RUN chmod +x env.sh
 
 # Start nginx server
-EXPOSE 80
+EXPOSE 8080
 CMD ["/bin/bash", "-c", "/usr/share/nginx/html/env.sh && nginx -g \"daemon off;\""]

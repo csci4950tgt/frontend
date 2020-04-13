@@ -1,5 +1,6 @@
 // Get API_STUB env variable from window, default to localhost otherwise
-const API_STUB = window._env_.API_STUB || 'http://localhost:8080/api';
+const API_STUB =
+  (window._env_ && window._env_.API_STUB) || 'http://localhost:8080/api';
 
 const throwIfNot200 = res => {
   if (res.status >= 200 && res.status < 300) {
