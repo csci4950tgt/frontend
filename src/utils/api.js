@@ -1,6 +1,10 @@
 // Get API_STUB env variable from window, default to localhost otherwise
+const CLOUD_RUN_API_STUB = 'https://api-bwkgpgz7aq-uc.a.run.app/api';
+// const LOCAL_API_STUB = 'http://localhost:8080/api';
 const API_STUB =
-  (window._env_ && window._env_.API_STUB) || 'http://localhost:8080/api';
+  (window._env_ && window._env_.API_STUB) ||
+  process.env.REACT_APP_API_STUB ||
+  CLOUD_RUN_API_STUB;
 
 const throwIfNot200 = res => {
   if (res.status >= 200 && res.status < 300) {
