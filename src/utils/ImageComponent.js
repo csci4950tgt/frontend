@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { WithStore } from 'pure-react-carousel';
 import { Modal, Image } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 class ImageComponent extends Component {
   render() {
@@ -17,6 +18,11 @@ class ImageComponent extends Component {
     );
   }
 }
+
+ImageComponent.propTypes = {
+  images: PropTypes.array,
+  currentSlide: PropTypes.string,
+};
 
 export default WithStore(ImageComponent, state => ({
   currentSlide: state.currentSlide,

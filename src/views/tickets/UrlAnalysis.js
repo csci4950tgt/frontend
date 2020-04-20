@@ -1,5 +1,6 @@
 import React from 'react';
 import { Header, Grid } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 // My Components
 import SummaryBox from './SummaryBox';
@@ -47,6 +48,14 @@ const styles = {
   urlHeader: {
     textDecoration: 'underline',
   },
+};
+
+UrlAnalysis.propTypes = {
+  ticket: PropTypes.element.isRequired,
+};
+
+SectionTitle.propTypes = {
+  title: PropTypes.string,
 };
 
 export default UrlAnalysis;

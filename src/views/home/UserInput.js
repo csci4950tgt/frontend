@@ -9,6 +9,7 @@ import {
   Dropdown,
   Input,
 } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 // Utils
 import { createTicket } from '../../utils/api.js';
@@ -48,19 +49,20 @@ export default class UserInput extends Component {
       this.setState({ showOptions: true });
     }
   };
-  //for multiple on forms on a field
+
+  // for multiple on forms on a field
   onChangeURL = e => {
-    let ticket = { ...this.state.ticket };
+    const ticket = { ...this.state.ticket };
     ticket.url = e.target.value;
     this.setState({ ticket });
   };
 
   onChangeScreenshot = (e, i, selection) => {
-    let screenshotProp = this.state.ticket.screenshots[i];
+    const screenshotProp = this.state.ticket.screenshots[i];
     if (selection != null) {
-      //get the json object index of the select user agent
+      // get the json object index of the select user agent
       const index = userAgents.findIndex(item => item.name === selection.value);
-      let device = userAgents[index];
+      const device = userAgents[index];
       screenshotProp.userAgent = device.useragent || '';
       screenshotProp.width = parseInt(device.width) || '';
       screenshotProp.height = parseInt(device.height) || '';
@@ -83,7 +85,7 @@ export default class UserInput extends Component {
   addScreenshot = e => {
     e.preventDefault();
     this.setState(prevState => {
-      let ticket = { ...prevState.ticket };
+      const ticket = { ...prevState.ticket };
       const len = ticket.screenshots.length;
       ticket.screenshots = [
         ...ticket.screenshots,
@@ -101,7 +103,7 @@ export default class UserInput extends Component {
   removeScreenshot = (e, i) => {
     e.preventDefault();
     this.setState(prevState => {
-      let ticket = { ...prevState.ticket };
+      const ticket = { ...prevState.ticket };
       ticket.screenshots = ticket.screenshots.filter((s, index) => i !== index);
       return { ticket };
     });
@@ -112,7 +114,7 @@ export default class UserInput extends Component {
       return typeof s.height === 'number' && typeof s.width === 'number';
     };
 
-    let newTicket = { ...ticket };
+    const newTicket = { ...ticket };
     // filter out screenshots with no width or height
     newTicket.screenshots = newTicket.screenshots.filter(isValidScreenshot);
 
@@ -217,7 +219,7 @@ export default class UserInput extends Component {
   }
 }
 
-const CustomScreenshotInput = ({ s, onChange, onClick, i, state }) => {
+const CustomScreenshotInput = ({ s, onChange, onClick, i }) => {
   return (
     <>
       <Grid.Row columns={1} style={{ justifyContent: 'center' }}>
@@ -290,4 +292,11 @@ const CustomScreenshotInput = ({ s, onChange, onClick, i, state }) => {
       </Grid.Row>
     </>
   );
+};
+
+CustomScreenshotInput.propTypes = {
+  s: PropTypes.element.isRequired,
+  onChange: PropTypes.func,
+  onClick: PropTypes.func,
+  i: PropTypes.number,
 };

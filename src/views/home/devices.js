@@ -17,7 +17,7 @@
 //
 // [1] https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/devtools/front_end/toolbox/OverridesUI.js
 
-//currently our website only displays phone and tablet options all in one array called devices
+// currently our website only displays phone and tablet options all in one array called devices
 
 export const userAgentOptions = {
   devices: [

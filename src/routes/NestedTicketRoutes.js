@@ -1,6 +1,7 @@
 import React from 'react';
 import { Header } from 'semantic-ui-react';
 import { Switch, Route } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 // Components
 import RecentTickets from '../components/RecentTickets';
@@ -17,5 +18,9 @@ const NestedTicketRoutes = ({ path }) => (
     <Route path={`${path}/:ticketID`} component={Ticket} />
   </Switch>
 );
+
+NestedTicketRoutes.propTypes = {
+  path: PropTypes.string,
+};
 
 export default NestedTicketRoutes;

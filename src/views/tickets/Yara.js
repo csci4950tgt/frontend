@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Segment, List } from 'semantic-ui-react';
 import { getArtifactListing, getArtifact, getTicket } from '../../utils/api.js';
+import PropTypes from 'prop-types';
 
 const REFRESH_EVERY_MS = 1000;
 
@@ -36,10 +37,10 @@ export default class Yara extends Component {
       artifact.filename.endsWith('.yara')
     );
 
-    let yara = [];
+    const yara = [];
 
     for (const item of artifacts) {
-      let artifact = await getArtifact(this.props.ticketID, item.filename);
+      const artifact = await getArtifact(this.props.ticketID, item.filename);
       yara.push(artifact);
     }
     return yara;
@@ -51,12 +52,12 @@ export default class Yara extends Component {
       const ticket = await getTicket(ticketId);
       const { processed } = ticket.ticket;
 
-      let artifacts = await this.fetchArtifacts();
-      let matchedRules = [];
+      const artifacts = await this.fetchArtifacts();
+      const matchedRules = [];
 
       let i = 0;
       for (i; i < artifacts.length; i++) {
-        let item = JSON.parse(artifacts[i]);
+        const item = JSON.parse(artifacts[i]);
         const rule = JSON.parse(item.matchedRule.substr(7));
         console.log('This is the information that will need to be printed');
         console.log(rule.rules[0]);
@@ -118,3 +119,7 @@ export default class Yara extends Component {
     );
   }
 }
+
+Yara.propTypes = {
+  ticketID: PropTypes.number,
+};

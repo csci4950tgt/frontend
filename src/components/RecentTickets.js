@@ -48,8 +48,8 @@ export default class RecentTickets extends Component {
                       <tr key={ticket.ID}>
                         <td>
                           {ticket.url.length > 30
-                          ? ticket.url.substring(0, 30) + '...'
-                          : ticket.url}
+                            ? ticket.url.substring(0, 30) + '...'
+                            : ticket.url}
                         </td>
                         <td>
                           <Moment date={ticket.CreatedAt} fromNow />
