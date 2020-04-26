@@ -131,6 +131,7 @@ export default class UserInput extends Component {
     const cleanTicket = this.cleanTicket();
     const body = JSON.stringify(cleanTicket);
     const res = await createTicket(body);
+    debugger;
     if (!res) {
       console.error('Error creating ticket!!');
       // TODO: let user know about error
