@@ -5,6 +5,7 @@ import { getArtifact, getArtifactListing } from '../../utils/api';
 import { js as beautify } from 'js-beautify';
 import 'ace-builds/src-noconflict/mode-javascript';
 import 'ace-builds/src-noconflict/theme-monokai';
+import PropTypes from 'prop-types';
 
 export default class CodeBlock extends Component {
   constructor(props) {
@@ -37,7 +38,7 @@ export default class CodeBlock extends Component {
       // Successfully got js file artifacts, save in state
       let currentCode;
       if (fileList.length > 0) {
-        currentCode = fileList[0]['value'];
+        currentCode = fileList[0].value;
       } else {
         currentCode = 'No JavaScript found on this website.';
         fileList.push({
@@ -126,3 +127,7 @@ export default class CodeBlock extends Component {
     );
   }
 }
+
+CodeBlock.propTypes = {
+  ticketID: PropTypes.number,
+};

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { WithStore } from 'pure-react-carousel';
 import { Modal } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 class TextComponent extends Component {
   render() {
@@ -11,6 +12,11 @@ class TextComponent extends Component {
     );
   }
 }
+
+TextComponent.propTypes = {
+  ocrText: PropTypes.array,
+  currentSlide: PropTypes.string,
+};
 
 export default WithStore(TextComponent, state => ({
   currentSlide: state.currentSlide,

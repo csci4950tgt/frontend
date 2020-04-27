@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Icon, Segment, List, Label } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 export default class SafeBrowsing extends Component {
   constructor(props) {
@@ -124,3 +125,7 @@ export default class SafeBrowsing extends Component {
     );
   }
 }
+
+SafeBrowsing.propTypes = {
+  matches: PropTypes.array,
+};

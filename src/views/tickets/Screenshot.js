@@ -9,6 +9,7 @@ import {
   Modal,
   Header,
 } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 // Utils
 import {
@@ -28,6 +29,7 @@ export default class Screenshot extends Component {
   state = {
     carouselLength: 0,
   };
+
   // TODO: Refactor this!! Never should keep track of things in React
   // Component outside of the state!!
   carousel = [];
@@ -36,11 +38,11 @@ export default class Screenshot extends Component {
 
   async getTicket() {
     // always get full page screenshot and add it to the carousel
-    let fullscreenImageURL = getArtifactURL(
+    const fullscreenImageURL = getArtifactURL(
       this.props.ticketID,
       'screenshotFull.png'
     );
-    let image = (
+    const image = (
       <Slide index={0} key={0}>
         <Header as="h4">Full Screen Image</Header>
         <Image
@@ -58,13 +60,13 @@ export default class Screenshot extends Component {
     this.setState({ carouselLength: 1 });
 
     try {
-      let ticket = await getTicket(this.props.ticketID);
+      const ticket = await getTicket(this.props.ticketID);
 
-      for (let i in ticket.ticket.screenshots) {
+      for (const i in ticket.ticket.screenshots) {
         const filename = ticket.ticket.screenshots[i].filename;
         const imageURL = getArtifactURL(this.props.ticketID, filename);
         this.imageURLs.push(imageURL);
-        let carouselImg = (
+        const carouselImg = (
           <Slide index={i + 1} centered="true" key={i + 1}>
             <Header as="h4">{filename}</Header>
             <Image
@@ -94,12 +96,12 @@ export default class Screenshot extends Component {
       );
 
       // create objects for them in the carousel
-      for (let i in artifactListing) {
+      for (const i in artifactListing) {
         const image = artifactListing[i];
         const artifactUrl = getArtifactURL(this.props.ticketID, image.filename);
         this.imageURLs.push(artifactUrl);
 
-        let carouselImg = (
+        const carouselImg = (
           <Slide
             index={this.carousel.length + 2}
             centered="true"
@@ -140,9 +142,9 @@ export default class Screenshot extends Component {
   }
 
   render() {
-    //Carasoul has option to play
-    //isPlaying="true"
-    //interval="3500"
+    // Carasoul has option to play
+    // isPlaying="true"
+    // interval="3500"
     return (
       <div>
         <Segment>
@@ -180,3 +182,7 @@ export default class Screenshot extends Component {
     );
   }
 }
+
+Screenshot.propTypes = {
+  ticketID: PropTypes.number,
+};

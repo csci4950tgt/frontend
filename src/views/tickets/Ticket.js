@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Loader, Placeholder, Segment } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 import { getTicket } from '../../utils/api.js';
 import TicketNotFound from './TicketNotFound';
@@ -108,3 +109,7 @@ export default class Ticket extends Component {
     }
   }
 }
+
+Ticket.propTypes = {
+  match: PropTypes.element.isRequired,
+};
