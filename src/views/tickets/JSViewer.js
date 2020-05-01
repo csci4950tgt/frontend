@@ -49,25 +49,25 @@ export default class CodeBlock extends Component {
       }
       this.setState({ fileList, currentCode });
     } catch (error) {
-      // TODO: let user know about error getting artifact listing
-      // this.setState(prevState => {
-      //       return {
-      //         filesBeingBlocked: true,
-      //         fileList: [
-      //           ...prevState.fileList,
-      //           {
-      //             key: i,
-      //             text: name + ' (blocked by the adblocker)',
-      //             value:
-      //               'It looks like this resource is blocked by your adblocker',
-      //             // if we don't put value and this disabled entry is the first one, it will be pre-selected and highlighted
-      //             // see https://github.com/Semantic-Org/Semantic-UI-React/issues/3130#issuecomment-530703465
-      //             disabled: true,
-      //           },
-      //         ],
-      //       };
-      //     });
-      console.error(error.message);
+      this.setState(prevState => {
+        const currentCode =
+          'It looks like a resource is blocked by your adblocker. Please disable your adblocker on this site.';
+        return {
+          filesBeingBlocked: true,
+          currentCode,
+          fileList: [
+            {
+              key: 'Blocked by adblocker',
+              text: 'Blocked by adblocker',
+              value: currentCode,
+              // if we don't put value and this disabled entry is the first one, it will be pre-selected and highlighted
+              // see https://github.com/Semantic-Org/Semantic-UI-React/issues/3130#issuecomment-530703465
+              disabled: true,
+            },
+          ],
+        };
+      });
+      // console.error(error.message);
     }
   }
 

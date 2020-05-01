@@ -1,0 +1,11 @@
+node_modules/
+build/
+.env.template
+.github/
+.gitignore
+LICENSE
+README.md
+
+# Temporary env files
+/public/env-config.js
+env-config.js
