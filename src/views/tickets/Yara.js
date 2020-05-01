@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Segment, List } from 'semantic-ui-react';
+import { Segment, List, Label } from 'semantic-ui-react';
 import { getArtifactListing, getArtifact, getTicket } from '../../utils/api.js';
 
 const REFRESH_EVERY_MS = 1000;
@@ -45,6 +45,22 @@ export default class Yara extends Component {
     return yara;
   }
 
+  getRuleName = rule => {
+    console.log(rule);
+    if (rule.metas) {
+      for (const item of rule.metas) {
+        console.log(item);
+        if (item.id === 'desc') {
+          return item.value;
+        } else if (item.id === 'description') {
+          return item.value;
+        }
+      }
+    } else {
+      return rule.id;
+    }
+  };
+
   refreshYaraState = async e => {
     try {
       const ticketId = this.props.ticketID;
@@ -80,9 +96,10 @@ export default class Yara extends Component {
     const YaraListItem = item => (
       <List.Item>
         <List.Content>
-          <h3>
-            Key = {item[0]}, ID = {item[1].id}
-          </h3>
+          <Segment>
+            <Label attached="top">Rule Matched</Label>
+            <p>{this.getRuleName(item[1])}</p>
+          </Segment>
         </List.Content>
       </List.Item>
     );
@@ -93,15 +110,13 @@ export default class Yara extends Component {
             <Segment size="huge" attached="top" inverted>
               Yara Results
             </Segment>
-            <Segment attached="bottom">
-              <h3>Waiting for Yara Results</h3>
-            </Segment>
+            <Segment loading attached="bottom" padded="very" />
           </>
         )}
         {this.state.processed && (
           <>
             <Segment size="huge" attached="top" inverted>
-              Yara Results
+              Yara Results: {this.state.matchedRules.length} rules matched
             </Segment>
             <Segment attached="bottom">
               {this.state.matchedRules.length ? (
