@@ -4,6 +4,19 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 run `npm install` inside repo to install required dependencies
 
+## Running with Docker
+
+A `Dockerfile` for this service is provided. To run just this image, use the following commands:
+
+```bash
+ docker build --tag frontend .     # Build the docker image
+ docker run -p 3000:8080 frontend  # Run image as container on port 3000
+ # If you'd like to change the API_STUB, you can run image like so...
+ # docker run -p 3000:8080 -e API_STUB=http://your_api_stub.com/api frontend
+```
+
+Alternatively, You can set up the entire system using Docker and Docker-Compose. See more information and instructions in the [csci4950tgt/utils](https://github.com/csci4950tgt/utils) repository.
+
 ## Available Scripts
 
 In the project directory, you can run:

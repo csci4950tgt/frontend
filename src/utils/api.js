@@ -1,8 +1,5 @@
 // Get API_STUB env variable from window, default to backup api stub otherwise
 let backup_api_stub = 'http://localhost:8080/api';
-// if (process.env.NODE_ENV === 'production')
-//   backup_api_stub = 'https://api-bwkgpgz7aq-uc.a.run.app/api';
-if (window._env_) console.log(window._env_);
 const API_STUB = (window._env_ && window._env_.API_STUB) || backup_api_stub;
 
 const throwIfNot200 = res => {
