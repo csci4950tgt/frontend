@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "js-beautify": "^1.10.3",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "perms": "^0.1.0",
     "pure-react-carousel": "^1.26.1",
     "react": "^16.13.1",
